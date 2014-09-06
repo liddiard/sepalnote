@@ -28,7 +28,7 @@ class Note(models.Model):
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.position = self.next_note_number()
-        super(UserProfile, self).save(*args, **kwargs)
+        super(Note, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.text
