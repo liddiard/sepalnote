@@ -53,9 +53,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'repo.urls'
+ROOT_URLCONF = 'project.urls'
 
-WSGI_APPLICATION = 'repo.wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Internationalization
