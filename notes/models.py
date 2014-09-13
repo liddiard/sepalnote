@@ -1,8 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Note(models.Model):
-    user = models.ForeignKey('User')
+    user = models.ForeignKey(User)
     parent = models.ForeignKey('self', null=True, blank=True)
     position = models.PositiveIntegerField(default=0, db_index=True)
         # order in which the note should be displayed relative to siblings
@@ -19,9 +20,13 @@ class Note(models.Model):
         ordering = ['position'] 
 
     def next_note_number(self):
-        return Note.objects.filter(user=self.user).order_by('-number')\
-                           .first().number + 1
-    
+        latest_note = Note.objects.filter(user=self.user).order_by('-number')\
+                          .first()
+        if latest_note:
+            return latest_note.number + 1
+        else:
+            return 0
+
     def immediate_children(self):
         return Note.objects.filter(parent=self)
 
@@ -35,7 +40,7 @@ class Note(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField('User')
+    user = models.OneToOneField(User)
     focused_note = models.ForeignKey('Note', null=True, blank=True)
     spellcheck = models.BooleanField(default=True)
     
