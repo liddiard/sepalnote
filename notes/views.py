@@ -89,7 +89,8 @@ class MajorPaneNotesView(AuthenticatedAjaxView):
             return self.key_error('Required key (focused_note) missing from '
                                   'request.')
         try:
-            focused_note = Note.objects.get(id=focused_note_id)
+            focused_note = Note.objects.get(id=focused_note_id, 
+                                            user=request.user)
         except Note.DoesNotExist:
             return self.does_not_exist('Note matching id %s not found.'\
                                         % focused_note_id)
@@ -100,8 +101,12 @@ class MajorPaneNotesView(AuthenticatedAjaxView):
 class MinorPaneNotesView(AuthenticatedAjaxView):
     
     def get(self, request):
-        tree = get_note_children({}, major_pane=False, root=None) 
-        return self.success(notes=tree)
+        response = []
+        root_notes = Note.objects.filter(user=request.user, parent=None)
+        for note in root_notes:
+            tree = get_note_children({}, major_pane=False, root=note) 
+            response.append(tree)
+        return self.success(notes=response)
 
 
 class SearchNotesView(AuthenticatedAjaxView):
@@ -110,7 +115,8 @@ class SearchNotesView(AuthenticatedAjaxView):
         query = request.GET.get('query')
         if query is None:
             return self.key_error('Required key (query) missing from request.')
-        search_results = Note.objects.filter(text__icontains=query)
+        search_results = Note.objects.filter(user=request.user,
+                                             text__icontains=query)
         response = [model_to_dict(result) for result in search_results]
         return self.success(results=response)
 
@@ -134,11 +140,15 @@ class AddNoteView(AuthenticatedAjaxView):
         text = request.POST.get('text')
         if text is None:
             return self.key_error('Required key (text) missing from request.')
-        try:
-            parent_note = Note.objects.get(id=parent_id)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s does not exist.'\
-                                       % parent_id)
+        parent_id = json.loads(parent_id)
+        if not parent_id: # this will be a top-level note
+            parent_note = None
+        else:
+            try:
+                parent_note = Note.objects.get(id=parent_id, user=request.user)
+            except Note.DoesNotExist:
+                return self.does_not_exist('Note matching id %s does not '
+                                           'exist.' % parent_id)
         following_sibling_notes = Note.objects.filter(parent=parent_note, 
                                        position__gte=position)\
                                       .order_by('-position')
@@ -167,7 +177,7 @@ class UpdateNoteView(AuthenticatedAjaxView):
         if text is None:
             return self.key_error('Required key (text) missing from request.')
         try:
-            note = Note.objects.get(id=note_id)
+            note = Note.objects.get(id=note_id, user=request.user)
         except Note.DoesNotExist:
             return self.does_not_exist('Note matching id %s does not exist.'\
                                        % note_id)
@@ -188,7 +198,7 @@ class DeleteNoteView(AuthenticatedAjaxView):
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
         try:
-            note = Note.objects.get(id=note_id)
+            note = Note.objects.get(id=note_id, user=request.user)
         except Note.DoesNotExist:
             return self.does_not_exist('Note matching id %s does not exist.'\
                                        % note_id) 
@@ -249,7 +259,7 @@ class ExpandCollapseNoteView(AuthenticatedAjaxView):
                                   'request.')
         major_pane = json.loads(major_pane)
         try:
-            note = Note.objects.get(id=note_id)
+            note = Note.objects.get(id=note_id, user=request.user)
         except Note.DoesNotExist:
             return self.does_not_exist('Note matching id %s does not exist.'\
                                        % note_id) 
@@ -281,7 +291,7 @@ class IndentNoteView(AuthenticatedAjaxView):
                                   'request.')
         indent = json.loads(indent)
         try:
-            note = Note.objects.get(id=note_id)
+            note = Note.objects.get(id=note_id, user=request.user)
         except Note.DoesNotExist:
             return self.does_not_exist('Note matching id %s does not exist.'\
                                        % note_id) 
@@ -339,7 +349,7 @@ class ChangeNotePermissionsView(AuthenticatedAjaxView):
                                   'request.')
         public = json.loads(public)
         try:
-            note = Note.objects.get(id=note_id)
+            note = Note.objects.get(id=note_id, user=request.user)
         except Note.DoesNotExist:
             return self.does_not_exist('Note matching id %s does not exist.'\
                                        % note_id) 
