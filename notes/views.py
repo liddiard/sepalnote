@@ -15,7 +15,7 @@ from .models import Note, UserProfile
 # utility functions
 
 def get_note_children(response, major_pane, root):
-    children = Note.objects.filter(parent=root)
+    children = root.immediate_children()
     if major_pane:
         children = children.filter(expanded_in_major_pane=True)
     else: # minor_pane
@@ -154,6 +154,7 @@ class AddNoteView(AuthenticatedAjaxView):
                                       .order_by('-position')
         with transaction.atomic():
             for note in following_sibling_notes:
+                # shift subsequent notes down to make room for the new one
                 note.position += 1
                 note.save()
             new_note = Note(parent=parent_note, position=position, text=text, 
@@ -214,12 +215,7 @@ class DeleteNoteView(AuthenticatedAjaxView):
         with transaction.atomic():
             if preceding_sibling_note: 
                 # the note we're deleting has siblings before it
-                last_note = preceding_sibling_note.immediate_children()\
-                                                  .order_by('position').last()
-                if last_note:
-                    next_position = last_note.number
-                else:
-                    next_position = 0
+                next_position = preceding_sibling_note.next_child_position()
                 # append the children of the deleted note to the previous
                 # sibling
                 for pos, note in enumerate(children):
@@ -305,12 +301,7 @@ class IndentNoteView(AuthenticatedAjaxView):
                 return self.validation_error('This note can\'t be indented '
                                              'because it has no preceding '
                                              'siblings.')
-            last_note = preceding_sibling_note.immediate_children()\
-                                              .order_by('position').last()
-            if last_note:
-                next_position = last_note.number
-            else:
-                next_position = 0
+            next_position = preceding_sibling_note.next_child_position()
             note.parent = preceding_sibling_note
             note.position = next_position
             note.save()
