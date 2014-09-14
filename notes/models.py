@@ -62,4 +62,4 @@ class UserProfile(models.Model):
         return Note.objects.filter(user=self.user, parent=None) 
         
     def __unicode__(self):
-        return self.user
+        return self.user.username
