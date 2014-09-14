@@ -84,16 +84,8 @@ class AuthenticatedAjaxView(AjaxView):
 class MajorPaneNotesView(AuthenticatedAjaxView):
     
     def get(self, request):
-        focused_note_id = request.GET.get('focused_note')
-        if focused_note_id is None:
-            return self.key_error('Required key (focused_note) missing from '
-                                  'request.')
-        try:
-            focused_note = Note.objects.get(id=focused_note_id, 
-                                            user=request.user)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s not found.'\
-                                        % focused_note_id)
+        profile = UserProfile.objects.get(user=request.user)
+        focused_note = profile.focused_note
         tree = get_note_children({}, major_pane=True, root=focused_note) 
         return self.success(notes=tree)
 
@@ -266,8 +258,13 @@ class ExpandCollapseNoteView(AuthenticatedAjaxView):
             note.expanded_in_minor_pane = expanded =\
                                                 not note.expanded_in_minor_pane
         note.save()
-        return self.success(id=note.id, major_pane=major_pane, 
-                            expanded=expanded)
+        if expanded:
+            tree = get_note_children({}, major_pane=major_pane, root=note) 
+            return self.success(id=note.id, major_pane=major_pane,
+                                expanded=expanded, notes=tree)
+        else:
+            return self.success(id=note.id, major_pane=major_pane, 
+                                expanded=expanded)
 
 
 class IndentNoteView(AuthenticatedAjaxView):
@@ -351,4 +348,25 @@ class ChangeNotePermissionsView(AuthenticatedAjaxView):
             for child in children:
                 set_note_permissions(child)
         set_note_permissions(note)
+        return self.success(id=note.id)
+
+
+class UpdateFocusedNoteView(AuthenticatedAjaxView):
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super(ChangeNotePermissionsView, self).dispatch(*args, **kwargs)
+
+    def post(self, request):
+        note_id = request.POST.get('id')
+        if note_id is None:
+            return self.key_error('Required key (id) missing from request.')
+        try:
+            note = Note.objects.get(id=note_id, user=request.user)
+        except Note.DoesNotExist:
+            return self.does_not_exist('Note matching id %s does not exist.'\
+                                       % note_id) 
+        profile = UserProfile.objects.get(user=request.user)
+        profile.focused_note = note
+        profile.save()
         return self.success(id=note.id)

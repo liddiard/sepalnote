@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^api/note/expand/$', views.ExpandCollapseNoteView.as_view(), name='note_expand'),
     url(r'^api/note/indent/$', views.IndentNoteView.as_view(), name='note_indent'),
     url(r'^api/note/change-permissions/$', views.ChangeNotePermissionsView.as_view(), name='note_permissions'),
+    url(r'^api/userprofile/update-focused-note/$', views.UpdateFocusedNoteView.as_view(), name='userprofile_focused_note'),
 
     # admin
     url(r'^admin/', include(admin.site.urls)),
