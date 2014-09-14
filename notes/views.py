@@ -16,15 +16,17 @@ from .models import Note, UserProfile
 
 def get_note_children(response, major_pane, root):
     children = root.immediate_children()
-    if major_pane:
-        children = children.filter(expanded_in_major_pane=True)
-    else: # minor_pane
-        children = children.filter(expanded_in_minor_pane=True)
     if root:
         response = model_to_dict(root)
     if children: 
-        response['children'] = [get_note_children(response, major_pane, child)
-                                for child in children]
+        if major_pane:
+            response['children'] = [get_note_children(response, major_pane, 
+                                    child) for child in children if 
+                                    child.parent.expanded_in_major_pane]
+        else: # minor_pane
+            response['children'] = [get_note_children(response, major_pane, 
+                                    child) for child in children if 
+                                    child.parent.expanded_in_minor_pane]
     return response # base case
 
 
