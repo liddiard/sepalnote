@@ -6,8 +6,8 @@ from notes import views
 
 urlpatterns = patterns('',
     # pages
-    # url(r'^$', 'notes.views.FrontView', name='front'),
-    # url(r'^note/', 'notes.views.NotesView'),
+    # url(r'^$', views.FrontView.as_view(), name='front'),
+    url(r'^note/', views.NotesView.as_view(), name='notes'),
 
     # api
     url(r'^api/note/major-pane/$', views.MajorPaneNotesView.as_view(), name='major_pane'),
