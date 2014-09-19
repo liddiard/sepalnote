@@ -12,6 +12,8 @@ $(document).ready(function(){
 function notesJSONtoDOM(root_json, root_dom) {
     $('<li/>', {
         text: root_json.text,
+        'data-id': root_json.id,
+        contenteditable: true
     }).appendTo(root_dom);
     if (typeof root_json.children !== 'undefined' && root_json.children.length > 0) {
         var $list = $('<ul/>', {}).appendTo(root_dom);
