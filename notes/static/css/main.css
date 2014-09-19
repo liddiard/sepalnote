@@ -1,0 +1,27 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4B2A08;
+  background-color: #fffef0;
+  margin: 0;
+  border: 0;
+  padding: 0; }
+
+aside {
+  position: absolute;
+  height: 100%;
+  width: 300px;
+  overflow-x: scroll;
+  border-right: 1px solid #f1dab6;
+  background-color: #fffee9; }
+
+main {
+  position: absolute;
+  left: 300px; }
+
+.notes ul {
+  padding-left: 2em;
+  border-left: 1px solid #BFFFA6;
+  list-style-type: none; }
+  .notes ul li {
+    outline: none;
+    padding: 0.12em 0; }
