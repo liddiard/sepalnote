@@ -1,12 +1,18 @@
+// globals
+window.SYNC_WAIT_TIME = 3000; // ms
+
 $(document).ready(function(){
     ajaxGet({}, '/api/note/minor-pane/', function(response){
         for (var i = 0; i < response.notes.length; i++) {
             notesJSONtoDOM(response.notes[i], $('aside ul'));
         }
+        bindNoteEvents($('aside li'));
     });
     ajaxGet({}, '/api/note/major-pane/', function(response){
         notesJSONtoDOM(response.notes, $('main ul'));
+        bindNoteEvents($('main li'));
     });
+
 });
 
 function notesJSONtoDOM(root_json, root_dom) {
@@ -21,6 +27,22 @@ function notesJSONtoDOM(root_json, root_dom) {
             notesJSONtoDOM(root_json.children[i], $list);
         }
     }
+}
+
+function bindNoteEvents($el) {
+    $el.keypress(function(){
+        console.log('keypress');
+        var $note = $(this);
+        if (this.timeoutId)
+            window.clearTimeout(this.timeoutId);
+        this.timeoutId = window.setTimeout(function(){
+            ajaxPost(
+                {id: $note.attr('data-id'), text: $note.text()},
+                '/api/note/update/',
+                function(response){ console.log(response) }
+            );
+        }, window.SYNC_WAIT_TIME);
+    });
 }
 
 
