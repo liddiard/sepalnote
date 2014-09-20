@@ -1,30 +1,81 @@
 $helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $background-color: #fffef0;
+$sidebar-width: 300px;
 
 body {
     font-family: $helvetica;
-    color: #4B2A08;
+    color: #442A0A;
     background-color: $background-color;
     margin: 0;
     border: 0;
     padding: 0;
 }
 
-aside {
+a {
+    $color: #4774E7;
+    color: $color;
+    cursor: pointer;
+
+    &:hover {
+        color: $color + #111;
+    }
+
+    &:active {
+        color: $color - #111;
+    }
+}
+
+dfn {
+    font-weight: bold;
+    font-style: normal;
+    color: #30AA00;
+    cursor: pointer;
+}
+
+main.notes {
     position: absolute;
     height: 100%;
-    width: 300px;
-    overflow-x: scroll;
+    overflow-y: auto;
+    left: $sidebar-width;
+    right: 0;
+    box-sizing: border-box;
+    padding-right: 1em;
+
+    & > ul {
+        border-left: none;
+
+        & > li {
+            font-size: 175%;
+        }
+
+        & > ul {
+            border-left: none;
+            padding-left: 0;
+        }
+    }
+}
+
+aside.notes {
+    position: absolute;
+    height: 100%;
+    width: $sidebar-width;
+    overflow-x: auto;
     border-right: 1px solid #f1dab6;
     background-color: $background-color - #000007;
+    box-shadow: -10px 0 10px -10px rgba(0,0,0, 0.1) inset;
+    white-space: nowrap;
+    box-sizing: border-box;
+
+    & > ul {
+        border-left: none;
+        padding-left: 1em;
+    }
 }
 
-main {
-    position: absolute;
-    left: 300px;
-}
-
-ul * {
+.logo {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: normal;
+    color: #6D00AA;
 }
 
 .notes ul {
@@ -35,5 +86,10 @@ ul * {
     li {
         outline: none;
         padding: 0.12em 0;
+
+        &.selected {
+            background-color: rgba(210,220,255, 0.75);
+        }
     }
 }
+

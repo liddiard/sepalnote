@@ -1,22 +1,59 @@
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #4B2A08;
+  color: #442A0A;
   background-color: #fffef0;
   margin: 0;
   border: 0;
   padding: 0; }
 
-aside {
+a {
+  color: #4774e7;
+  cursor: pointer; }
+  a:hover {
+    color: #5885f8; }
+  a:active {
+    color: #3663d6; }
+
+dfn {
+  font-weight: bold;
+  font-style: normal;
+  color: #30AA00;
+  cursor: pointer; }
+
+main.notes {
+  position: absolute;
+  height: 100%;
+  overflow-y: auto;
+  left: 300px;
+  right: 0;
+  box-sizing: border-box;
+  padding-right: 1em; }
+  main.notes > ul {
+    border-left: none; }
+    main.notes > ul > li {
+      font-size: 175%; }
+    main.notes > ul > ul {
+      border-left: none;
+      padding-left: 0; }
+
+aside.notes {
   position: absolute;
   height: 100%;
   width: 300px;
-  overflow-x: scroll;
+  overflow-x: auto;
   border-right: 1px solid #f1dab6;
-  background-color: #fffee9; }
+  background-color: #fffee9;
+  box-shadow: -10px 0 10px -10px rgba(0, 0, 0, 0.1) inset;
+  white-space: nowrap;
+  box-sizing: border-box; }
+  aside.notes > ul {
+    border-left: none;
+    padding-left: 1em; }
 
-main {
-  position: absolute;
-  left: 300px; }
+.logo {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: normal;
+  color: #6D00AA; }
 
 .notes ul {
   padding-left: 2em;
@@ -25,3 +62,5 @@ main {
   .notes ul li {
     outline: none;
     padding: 0.12em 0; }
+    .notes ul li.selected {
+      background-color: rgba(210, 220, 255, 0.75); }
