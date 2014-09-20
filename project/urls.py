@@ -6,7 +6,7 @@ from notes import views
 
 urlpatterns = patterns('',
     # pages
-    # url(r'^$', views.FrontView.as_view(), name='front'),
+    url(r'^$', views.FrontView.as_view(), name='front'),
     url(r'^note/', views.NotesView.as_view(), name='notes'),
 
     # api

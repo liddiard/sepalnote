@@ -1,5 +1,6 @@
 $helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $background-color: #fffef0;
+$primary_color: #6700A0;
 $sidebar-width: 300px;
 
 body {
@@ -72,10 +73,45 @@ aside.notes {
     }
 }
 
+section.front {
+    max-width: 640px;
+    box-sizing: border-box;
+    padding: 1em;
+    margin: 1em auto;
+}
+
 .logo {
     font-family: 'Josefin Sans', sans-serif;
     font-weight: normal;
-    color: #6D00AA;
+    color: $primary_color;
+
+    &.front {
+        font-size: 4em;
+        margin: 0;
+        text-align: right;
+    }
+}
+
+.tagline {
+    color: $primary_color;
+    font-weight: normal;
+    font-size: 1.3em;
+    font-family: serif;
+    margin: 0;
+    text-align: right;
+}
+
+.description {
+    font-family: serif;
+    font-weight: 600;
+    margin: 0.4em 0;
+}
+
+.col {
+    float: left;
+    width: 50%;
+    padding: 0 1.5em;
+    box-sizing: border-box;
 }
 
 .notes ul {
