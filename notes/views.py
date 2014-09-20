@@ -134,8 +134,12 @@ class AddNoteView(AuthenticatedAjaxView):
         text = request.POST.get('text')
         if text is None:
             return self.key_error('Required key (text) missing from request.')
-        parent_id = json.loads(parent_id)
-        if not parent_id: # this will be a top-level note
+        try:
+            parent_id = int(parent_id)
+        except ValueError:
+            return self.validation_error('Could not convert (parent) %s to an '
+                                         'integer.' % parent_id)
+        if parent_id == 0: # this will be a top-level note
             parent_note = None
         else:
             try:

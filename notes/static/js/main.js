@@ -32,9 +32,18 @@ function bindNoteEvents($el) {
     $el.keypress(function(event){
         if (event.keyCode == 13) {
             event.preventDefault();
-            $('<li/>', {
+            var $new_note = $('<li/>', {
                 contenteditable: true,
             }).insertAfter($(this)).focus();
+            ajaxPost(
+                {'parent': $new_note.parent().attr('data-id') || 0,
+                 position: $new_note.index(),
+                 text: ''},
+                 '/api/note/add/',
+                 function(response){
+                    $new_note.attr('data-id', response.id);
+                 }
+            );
         }
         var $note = $(this);
         if (this.timeoutId)
