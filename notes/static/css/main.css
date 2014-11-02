@@ -41,7 +41,7 @@ aside.notes {
   height: 100%;
   width: 300px;
   overflow-x: auto;
-  border-right: 1px solid #f1dab6;
+  border-right: 1px solid #E4D1B3;
   background-color: #fffee9;
   box-shadow: -10px 0 10px -10px rgba(0, 0, 0, 0.1) inset;
   white-space: nowrap;
@@ -57,26 +57,25 @@ section.front {
   margin: 1em auto; }
 
 .logo {
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: 'Laila', sans-serif;
   font-weight: normal;
   color: #6700a0; }
   .logo.front {
-    font-size: 4em;
+    font-size: 3.5em;
     margin: 0;
     text-align: right; }
 
 .tagline {
   color: #6700a0;
-  font-weight: normal;
-  font-size: 1.3em;
-  font-family: serif;
+  font-weight: bold;
+  font-size: 1.2em;
   margin: 0;
   text-align: right; }
 
 .description {
-  font-family: serif;
-  font-weight: 600;
-  margin: 0.4em 0; }
+  margin: 1.2em 0;
+  font-size: 1.4em;
+  font-weight: normal; }
 
 .col {
   float: left;
