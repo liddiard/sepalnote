@@ -9,6 +9,9 @@ urlpatterns = patterns('',
     url(r'^$', views.FrontView.as_view(), name='front'),
     url(r'^note/', views.NotesView.as_view(), name='notes'),
 
+    # fragments
+    url(r'^fragment/note/', views.NoteFragmentView.as_view()),
+
     # api
     url(r'^api/note/major-pane/$', views.MajorPaneNotesView.as_view(), name='major_pane'),
     url(r'^api/note/minor-pane/$', views.MinorPaneNotesView.as_view(), name='minor_pane'),

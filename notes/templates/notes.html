@@ -2,12 +2,18 @@
 
 {% block content %}
 
-<aside class="notes">
-    <ul></ul>
-</aside>
+<section ng-controller="NotesController as notes">
 
-<main class="notes">
-    <ul></ul>
-</main>
+    <aside class="notes">
+        <ul></ul>
+    </aside>
+
+    <main class="notes">
+        <ul>
+            <li ng-repeat="note in notes.major_tree.notes" ng-include="'/fragment/note/'"></li>
+        </ul>
+    </main>
+
+</section>
 
 {% endblock %}

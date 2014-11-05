@@ -1,0 +1,5 @@
+{% verbatim %}{{note.text}}{% endverbatim %}
+<ul>
+    <li ng-repeat="note in note.children" ng-include="'/fragment/note/'"></li>
+</ul>
+</li>

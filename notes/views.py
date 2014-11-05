@@ -42,6 +42,12 @@ class NotesView(TemplateView):
     template_name = "notes.html"
 
 
+
+class NoteFragmentView(TemplateView):
+
+    template_name = "include/note.html"
+
+
 # abstract base classes
 
 class AjaxView(View):
@@ -86,10 +92,12 @@ class AuthenticatedAjaxView(AjaxView):
 class MajorPaneNotesView(AuthenticatedAjaxView):
     
     def get(self, request):
+        response = []
         profile = UserProfile.objects.get(user=request.user)
         focused_note = profile.focused_note
         tree = get_note_children({}, major_pane=True, root=focused_note) 
-        return self.success(notes=tree)
+        response.append(tree)
+        return self.success(notes=response)
 
 
 class MinorPaneNotesView(AuthenticatedAjaxView):
