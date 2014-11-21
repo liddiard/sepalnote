@@ -92,12 +92,10 @@ class AuthenticatedAjaxView(AjaxView):
 class MajorPaneNotesView(AuthenticatedAjaxView):
     
     def get(self, request):
-        response = []
         profile = UserProfile.objects.get(user=request.user)
         focused_note = profile.focused_note
         tree = get_note_children({}, major_pane=True, root=focused_note) 
-        response.append(tree)
-        return self.success(notes=response)
+        return self.success(note=tree)
 
 
 class MinorPaneNotesView(AuthenticatedAjaxView):
