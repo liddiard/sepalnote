@@ -45,4 +45,9 @@
             );
         });
     });
+
+    Mousetrap.bind('enter', function(event) {
+        console.log(document.activeElement);
+    });
+
 })();
