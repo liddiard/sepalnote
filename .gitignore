@@ -1,4 +1,5 @@
 *.pyc
 *.swp
 *.sass-cache/
+*.DS_Store
 notes/migrations/
