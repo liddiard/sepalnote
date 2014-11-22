@@ -1,5 +1,5 @@
-<input class="mousetrap" ng-keypress="note.push({text: ''})" ng-model="note.text"></input>
+<input class="mousetrap" ng-keypress="parent.children.push({text: ''})" ng-model="note.text"></input>
 <ul>
-    <li ng-repeat="note in note.children" ng-include="'/fragment/note/'"></li>
+    <li ng-repeat="note in note.children" ng-init="parent = $parent.$parent.note" ng-include="'/fragment/note/'"></li>
 </ul>
 </li>
