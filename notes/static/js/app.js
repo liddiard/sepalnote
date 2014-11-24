@@ -12,7 +12,7 @@
                 note = note[path[i]];
             }
             return note;
-        }
+        };
 
         this.applyDiff = function(diff) {
             for (var i = 0; i < diff.length; i++) {
@@ -28,7 +28,14 @@
                     });
                 }
             }
-        }
+        };
+
+        this.addNote = function(insertAfter, parent) {
+            if (parent.children[insertAfter].children)
+                parent.children[insertAfter].children.splice(0, 0, {text: ''});
+            else
+                parent.children.splice(insertAfter+1, 0, {text: ''});
+        };
 
         $http.get('/api/note/major-pane/').success(function(data){
             form.major_tree = data;
