@@ -5,6 +5,7 @@
         var form = this;
         this.major_tree = [];
         this.minor_tree = [];
+        this.focusedNote = null;
 
         this.noteFromPath = function(path) {
             var note = form.major_tree;
@@ -16,7 +17,7 @@
 
         this.applyDiff = function(diff) {
             for (var i = 0; i < diff.length; i++) {
-                if (diff[i].path[diff[i].path.length-1] === "$$hashKey")
+                if (diff[i].path[diff[i].path.length-1] === "$$hashKey") // TODO: look into the toJson angular method for this
                     continue;
                 else if (diff[i].kind === 'E') {
                     var note = form.noteFromPath(diff[i].path);
