@@ -7,6 +7,10 @@
         this.minor_tree = [];
         this.focusedNote = null;
 
+        this.setFocusedNote = function(note) {
+            form.focusedNote = note;
+        };
+
         this.noteFromPath = function(path) {
             var note = form.major_tree;
             for (var i = 0; i < path.length-1; i++) {
