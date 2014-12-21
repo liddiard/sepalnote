@@ -1,4 +1,4 @@
-<input ng-focus="notes.setFocusedNote(note)" class="mousetrap" ng-keypress="notes.addNote($index, parent)" ng-model="note.text"></input>
+<input ng-focus="notes.setFocusedNote(note)" class="mousetrap" ng-keydown="notes.keyHandler($event, {insertAfter: $index, parent: parent})" ng-model="note.text"></input>
 <ul>
     <li ng-repeat="note in note.children" ng-init="parent = $parent.$parent.note" ng-include="'/fragment/note/'"></li>
 </ul>

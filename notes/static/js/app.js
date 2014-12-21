@@ -1,18 +1,24 @@
 (function(){
     var app = angular.module('notes', []);
 
-    app.controller('NotesController', function($http, $scope) {
-        var form = this;
+    app.controller('NotesController', function($http, $scope, $timeout) {
+        var controller = this;
         this.major_tree = [];
         this.minor_tree = [];
-        this.focusedNote = null;
 
-        this.setFocusedNote = function(note) {
-            form.focusedNote = note;
-        };
+        this.keyHandler = function(event, config) {
+            if (event.keyCode === 13) // enter
+                controller.addNote(config.insertAfter, config.parent);
+            else if (event.shiftKey && event.keyCode === 9)
+                console.log('shift + tab pressed');
+            else if (event.keyCode === 9) // tab
+                console.log('tab pressed');
+            else if (event.keyCode === 8) // backspace
+                console.log('backspace pressed');
+        }
 
         this.noteFromPath = function(path) {
-            var note = form.major_tree;
+            var note = controller.major_tree;
             for (var i = 0; i < path.length-1; i++) {
                 note = note[path[i]];
             }
@@ -21,10 +27,10 @@
 
         this.applyDiff = function(diff) {
             for (var i = 0; i < diff.length; i++) {
-                if (diff[i].path[diff[i].path.length-1] === "$$hashKey") // TODO: look into the toJson angular method for this
+                if (diff[i].path[diff[i].path.length-1] === "$$hashKey") // angular adds these. we want to ignore them.
                     continue;
                 else if (diff[i].kind === 'E') {
-                    var note = form.noteFromPath(diff[i].path);
+                    var note = controller.noteFromPath(diff[i].path);
                     $http({
                         method: 'POST',
                         url: '/api/note/update/',
@@ -40,26 +46,27 @@
                 parent.children[insertAfter].children.splice(0, 0, {text: ''});
             else
                 parent.children.splice(insertAfter+1, 0, {text: ''});
+            $timeout(function(){ // wait until the DOM has updated
+                // move focus to the next (newly created) note
+                var inputs = document.getElementById('notes').getElementsByTagName('input');
+                angular.element(inputs).eq( getIndex(inputs, document.activeElement)+1 )[0].focus();
+            });
         };
 
         $http.get('/api/note/major-pane/').success(function(data){
-            form.major_tree = data;
+            controller.major_tree = data;
 
             /* listen for changes in notes */
             $scope.$watch(
-                function() { return form.major_tree },
+                function() { return controller.major_tree },
                 function(newValue, oldValue) {
                     var diff = DeepDiff(oldValue, newValue);
                     if (diff)
-                        form.applyDiff(diff);
+                        controller.applyDiff(diff);
                 },
                 true // objectEquality
             );
         });
-    });
-
-    Mousetrap.bind('enter', function(event) {
-        console.log(document.activeElement);
     });
 
 })();
