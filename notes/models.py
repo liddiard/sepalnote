@@ -1,23 +1,31 @@
+import random
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
+
+
+MAX_BIG_INT = 9223372036854775807 # maximum value of Django's BigInteger field
 
 
 class Note(models.Model):
+    uuid = models.BigIntegerField(primary_key=True, blank=True,
+                                  validators=[MinValueValidator(0)])
     user = models.ForeignKey(User)
     parent = models.ForeignKey('self', null=True, blank=True)
     position = models.PositiveIntegerField(db_index=True)
         # order in which the note should be displayed relative to siblings
-    number = models.PositiveIntegerField(db_index=True)
+    number = models.PositiveIntegerField(db_index=True, blank=True)
         # note id unique *to this user*. used for pretty URL access to notes.
     text = models.TextField(blank=True)
     updated = models.DateTimeField(auto_now=True)
     public = models.BooleanField(default=False)
     expanded_in_minor_pane = models.BooleanField(default=False)
     expanded_in_major_pane = models.BooleanField(default=True)
-    
+
     class Meta:
         unique_together = (('parent', 'position'), ('user', 'number'))
-        ordering = ['position'] 
+        ordering = ['position']
 
     def immediate_children(self):
         return Note.objects.filter(parent=self)
@@ -47,6 +55,8 @@ class Note(models.Model):
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.number = self.next_note_number()
+            if not kwargs.get('uuid'):
+                self.uuid = random.randint(0, MAX_BIG_INT)
         super(Note, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -57,9 +67,9 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     focused_note = models.ForeignKey('Note', null=True, blank=True)
     spellcheck = models.BooleanField(default=True)
-    
+
     def root_notes(self):
-        return Note.objects.filter(user=self.user, parent=None) 
-        
+        return Note.objects.filter(user=self.user, parent=None)
+
     def __unicode__(self):
         return self.user.username
