@@ -13,9 +13,9 @@ urlpatterns = patterns('',
     url(r'^fragment/note/', views.NoteFragmentView.as_view()),
 
     # api
-    url(r'^api/note/major-pane/$', views.MajorPaneNotesView.as_view(), name='major_pane'),
-    url(r'^api/note/minor-pane/$', views.MinorPaneNotesView.as_view(), name='minor_pane'),
+    url(r'^api/note/list/$', views.NotesListView.as_view(), name='note_list'),
     url(r'^api/note/search/$', views.SearchNotesView.as_view(), name='note_search'),
+    url(r'^api/note/diff/$', views.DiffNoteView.as_view(), name='note_diff'),
     url(r'^api/note/add/$', views.AddNoteView.as_view(), name='note_add'),
     url(r'^api/note/update/$', views.UpdateNoteView.as_view(), name='note_update'),
     url(r'^api/note/delete/$', views.DeleteNoteView.as_view(), name='note_delete'),
