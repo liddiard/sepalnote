@@ -4,36 +4,16 @@ import jsonpickle
 
 from django.http import HttpResponse
 from django.views.generic.base import View, TemplateView
-from django.forms.models import model_to_dict
-from django.db import transaction
 from django.utils.decorators import method_decorator # TODO: remove
 from django.views.decorators.csrf import csrf_exempt # TODO: remove
 
-from .models import Note, UserProfile
-
-
-# utility functions
-
-def get_note_children(response, major_pane, root):
-    children = root.immediate_children()
-    if root:
-        response = model_to_dict(root)
-    if children: 
-        if major_pane:
-            response['children'] = [get_note_children(response, major_pane, 
-                                    child) for child in children if 
-                                    child.parent.expanded_in_major_pane]
-        else: # minor_pane
-            response['children'] = [get_note_children(response, major_pane, 
-                                    child) for child in children if 
-                                    child.parent.expanded_in_minor_pane]
-    return response # base case
+from . import api
 
 
 # single page views
 
 class FrontView(TemplateView):
-     
+
     template_name = "front.html"
 
 
@@ -89,24 +69,11 @@ class AuthenticatedAjaxView(AjaxView):
 
 # api views
 
-class MajorPaneNotesView(AuthenticatedAjaxView):
-    
+class NotesListView(AuthenticatedAjaxView):
+
     def get(self, request):
-        profile = UserProfile.objects.get(user=request.user)
-        focused_note = profile.focused_note
-        tree = get_note_children({}, major_pane=True, root=focused_note) 
+        tree = api.list(request.user)
         return self.success(note=tree)
-
-
-class MinorPaneNotesView(AuthenticatedAjaxView):
-    
-    def get(self, request):
-        response = []
-        root_notes = Note.objects.filter(user=request.user, parent=None)
-        for note in root_notes:
-            tree = get_note_children({}, major_pane=False, root=note) 
-            response.append(tree)
-        return self.success(notes=response)
 
 
 class SearchNotesView(AuthenticatedAjaxView):
@@ -115,10 +82,24 @@ class SearchNotesView(AuthenticatedAjaxView):
         query = request.GET.get('query')
         if query is None:
             return self.key_error('Required key (query) missing from request.')
-        search_results = Note.objects.filter(user=request.user,
-                                             text__icontains=query)
-        response = [model_to_dict(result) for result in search_results]
-        return self.success(results=response)
+        results = api.search(user, query)
+        return self.success(results=results)
+
+
+class DiffNoteView(AuthenticatedAjaxView):
+
+    def post(self, request):
+        diff = json.loads(request.body)
+        for change in diff:
+            note = change['note']
+            if change['kind'] == 'U':
+                api.update(request.user, note['uuid'], note['text'])
+            elif change['kind'] == 'C':
+                api.add(request.user, note['uuid'], note['parent'],
+                        note['position'], note['text'])
+            else:
+                print change
+        return self.success()
 
 
 class AddNoteView(AuthenticatedAjaxView):
@@ -145,26 +126,8 @@ class AddNoteView(AuthenticatedAjaxView):
         except ValueError:
             return self.validation_error('Could not convert (parent) %s to an '
                                          'integer.' % parent_id)
-        if parent_id == 0: # this will be a top-level note
-            parent_note = None
-        else:
-            try:
-                parent_note = Note.objects.get(id=parent_id, user=request.user)
-            except Note.DoesNotExist:
-                return self.does_not_exist('Note matching id %s does not '
-                                           'exist.' % parent_id)
-        following_sibling_notes = Note.objects.filter(parent=parent_note, 
-                                       position__gte=position)\
-                                      .order_by('-position')
-        with transaction.atomic():
-            for note in following_sibling_notes:
-                # shift subsequent notes down to make room for the new one
-                note.position += 1
-                note.save()
-            new_note = Note(parent=parent_note, position=position, text=text, 
-                            user=self.request.user)
-            new_note.save()
-        return self.success(id=new_note.id)
+        new_note = api.add(request.user, parent_id, position, text)
+        return self.success(uuid=new_note.uuid)
 
 
 class UpdateNoteView(AuthenticatedAjaxView):
@@ -181,14 +144,8 @@ class UpdateNoteView(AuthenticatedAjaxView):
         text = request.POST.get('text')
         if text is None:
             return self.key_error('Required key (text) missing from request.')
-        try:
-            note = Note.objects.get(id=note_id, user=request.user)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s does not exist.'\
-                                       % note_id)
-        note.text = text
-        note.save()
-        return self.success()
+        note = api.update(request.user, note_id, text)
+        return self.success(uuid=note.uuid)
 
 
 class DeleteNoteView(AuthenticatedAjaxView):
@@ -202,44 +159,8 @@ class DeleteNoteView(AuthenticatedAjaxView):
         note_id = request.POST.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        try:
-            note = Note.objects.get(id=note_id, user=request.user)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s does not exist.'\
-                                       % note_id) 
-        parent = note.parent
-        position = note.position
-        following_sibling_notes = Note.objects.filter(parent=parent, 
-                                                      position__gt=position)\
-                                              .order_by('position')
-        preceding_sibling_note = Note.objects.filter(parent=parent, 
-                                                     position__lt=position)\
-                                             .order_by('position').last()
-        children = note.immediate_children()
-        with transaction.atomic():
-            if preceding_sibling_note: 
-                # the note we're deleting has siblings before it
-                next_position = preceding_sibling_note.next_child_position()
-                # append the children of the deleted note to the previous
-                # sibling
-                for pos, note in enumerate(children):
-                    note.parent = preceding_sibling_note
-                    note.position = next_position + pos
-                    note.save()
-            else: # the note we're deleting doesn't have any siblings before it
-                # dedent the children of the deleted note to make them children
-                # of the deleted note's parent
-                for pos, note in enumerate(children):
-                    note.parent = parent
-                    note.position = pos
-                    note.save()
-            note.delete()
-            for note in following_sibling_notes:
-                # shift subsequent siblings up one to keep numbering continuity
-                note.position -= 1
-                note.save()
-        return self.success(dedent=bool(not preceding_sibling_note))
-            # dedent: were children of the deleted note dedented?
+        dedent = api.delete(request.user, note_id)
+        return self.success(dedent=dedent)
 
 
 class ExpandCollapseNoteView(AuthenticatedAjaxView):
@@ -258,29 +179,13 @@ class ExpandCollapseNoteView(AuthenticatedAjaxView):
             return self.key_error('Required key (major_pane) missing from '
                                   'request.')
         major_pane = json.loads(major_pane)
-        try:
-            note = Note.objects.get(id=note_id, user=request.user)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s does not exist.'\
-                                       % note_id) 
-        if major_pane:
-            note.expanded_in_major_pane = expanded =\
-                                                not note.expanded_in_major_pane
-        else:
-            note.expanded_in_minor_pane = expanded =\
-                                                not note.expanded_in_minor_pane
-        note.save()
-        if expanded:
-            tree = get_note_children({}, major_pane=major_pane, root=note) 
-            return self.success(id=note.id, major_pane=major_pane,
-                                expanded=expanded, notes=tree)
-        else:
-            return self.success(id=note.id, major_pane=major_pane, 
-                                expanded=expanded)
+        note, tree = api.expand_collapse(request.user, note_id, major_pane)
+        return self.success(id=note.id, major_pane=major_pane,
+                            tree=tree)
 
 
 class IndentNoteView(AuthenticatedAjaxView):
-    
+
     # TODO: remove
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
@@ -295,40 +200,7 @@ class IndentNoteView(AuthenticatedAjaxView):
             return self.key_error('Required key (indent) missing from '
                                   'request.')
         indent = json.loads(indent)
-        try:
-            note = Note.objects.get(id=note_id, user=request.user)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s does not exist.'\
-                                       % note_id) 
-        parent = note.parent
-        position = note.position
-        if indent:
-            preceding_sibling_note = Note.objects.filter(parent=parent, 
-                                                        position__lt=position)\
-                                                 .order_by('position').last()
-            if not preceding_sibling_note:
-                return self.validation_error('This note can\'t be indented '
-                                             'because it has no preceding '
-                                             'siblings.')
-            next_position = preceding_sibling_note.next_child_position()
-            note.parent = preceding_sibling_note
-            note.position = next_position
-            note.save()
-        else: # dedent
-            if parent is None:
-                return self.validation_error('This note can\'t be dedented '
-                                             'because it is already at the '
-                                             'top level.')
-            succeeding_siblings_of_parent = Note.objects.filter(
-                                                parent=parent.parent,
-                                                position__gt=parent.position)\
-                                                .order_by('-position')
-            with transaction.atomic():
-                for sibling in succeeding_siblings_of_parent:
-                    sibling.position += 1
-                    sibling.save()
-                note.parent = parent.parent
-                note.save()
+        note = api.indent(request.user, note_id, indent)
         return self.success(id=note.id, indent=indent)
 
 
@@ -348,23 +220,13 @@ class ChangeNotePermissionsView(AuthenticatedAjaxView):
             return self.key_error('Required key (public) missing from '
                                   'request.')
         public = json.loads(public)
-        try:
-            note = Note.objects.get(id=note_id, user=request.user)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s does not exist.'\
-                                       % note_id) 
-        def set_note_permissions(root):
-            root.public = public 
-            root.save()
-            children = root.immediate_children() 
-            for child in children:
-                set_note_permissions(child)
-        set_note_permissions(note)
+        note = api.change_permissions(request.user, note_id, public)
         return self.success(id=note.id)
 
 
 class UpdateFocusedNoteView(AuthenticatedAjaxView):
 
+    # TODO: remove
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
         return super(ChangeNotePermissionsView, self).dispatch(*args, **kwargs)
@@ -373,12 +235,5 @@ class UpdateFocusedNoteView(AuthenticatedAjaxView):
         note_id = request.POST.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        try:
-            note = Note.objects.get(id=note_id, user=request.user)
-        except Note.DoesNotExist:
-            return self.does_not_exist('Note matching id %s does not exist.'\
-                                       % note_id) 
-        profile = UserProfile.objects.get(user=request.user)
-        profile.focused_note = note
-        profile.save()
+        note = api.update_focus(request.user, note_id)
         return self.success(id=note.id)
