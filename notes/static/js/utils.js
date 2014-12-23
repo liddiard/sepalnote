@@ -9,6 +9,12 @@ function getIndex(elements, element) {
     }
 }
 
+// move focus from current note to x # of elements forward where x is 'delta'
+function moveNoteFocus(delta) {
+    var inputs = document.getElementById('notes').getElementsByTagName('input');
+    angular.element(inputs).eq( getIndex(inputs, document.activeElement)+delta )[0].focus();
+}
+
 // generate a positive integer from zero to the max value of a BigInteger in
 // Django. Suitable for UUID generation.
 function generateUUID() {

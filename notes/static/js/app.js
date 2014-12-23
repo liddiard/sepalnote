@@ -14,13 +14,13 @@
         this.minor_tree = [];
         this.diff = []; // holds diff not yet sent to backend
 
-        this.keyHandler = function(event, index, parent, note) {
+        this.keyHandler = function(note, parent, index, event) {
             if (event.keyCode === 13) // enter
                 controller.addNote(index, parent);
             else if (event.shiftKey && event.keyCode === 9)
                 console.log('dedent note');
             else if (event.keyCode === 9) // tab
-                console.log('indent note');
+                controller.indentNote(note, parent, index, event, true);
             else if (event.keyCode === 8) // backspace
                 console.log('backspace pressed');
             else
@@ -60,10 +60,9 @@
                 parent.children[insertAfter].children.splice(0, 0, note);
             else
                 parent.children.splice(insertAfter+1, 0, note);
-            $timeout(function(){ // wait until the DOM has updated
+            $timeout(function(){ // wait for the DOM to update
                 // move focus to the next (newly created) note
-                var inputs = document.getElementById('notes').getElementsByTagName('input');
-                angular.element(inputs).eq( getIndex(inputs, document.activeElement)+1 )[0].focus();
+                moveNoteFocus(1);
             });
             controller.diff.push({note: note, kind: 'C'});
         };
@@ -74,6 +73,29 @@
             this.timeoutId = window.setTimeout(function(){
                 controller.diff.push({note: note, kind: 'U'});
             }, 5000);
+        };
+
+        this.indentNote = function(note, parent, index, event, indent) {
+            event.preventDefault();
+            if (indent) {
+                if (index > 0)
+                    var precedingSiblingNote = parent.children[index-1];
+                else
+                    return; // note can't be indented because there are no
+                            // preceding sibling notes
+                var nextPosition;
+                if (!precedingSiblingNote.hasOwnProperty('children'))
+                    precedingSiblingNote.children = [];
+                nextPosition = precedingSiblingNote.children.length;
+                precedingSiblingNote.children[nextPosition] = note;
+                $timeout(function(){ // wait for the DOM to update
+                    moveNoteFocus(-1);
+                    parent.children.splice(index, 1);
+                });
+            }
+            else { // dedent
+
+            }
         };
 
 
