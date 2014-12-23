@@ -89,9 +89,9 @@
                 nextPosition = precedingSiblingNote.children.length;
                 precedingSiblingNote.children[nextPosition] = note;
                 parent.children.splice(index, 1);
-                moveNoteFocus(1);
+                moveNoteFocus(1); // move focus off note that's getting deleted
                 $timeout(function(){ // wait for the DOM to update
-                    moveNoteFocus(-1);
+                    moveNoteFocus(-1); // move focus back to indented note
                 });
             }
             else { // dedent
