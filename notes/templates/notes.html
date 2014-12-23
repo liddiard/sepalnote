@@ -9,7 +9,6 @@
     </aside>
 
     <main class="notes">
-        {% verbatim %}{{notes.major_tree}}{% endverbatim %}
         <h1>{% verbatim %}{{notes.major_tree.note.text}}{% endverbatim %}</h1>
         <ul>
             <li ng-repeat="note in notes.major_tree.note.children" ng-init="parent = notes.major_tree.note" ng-include="'/fragment/note/'"></li>
