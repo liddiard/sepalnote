@@ -88,9 +88,10 @@
                     precedingSiblingNote.children = [];
                 nextPosition = precedingSiblingNote.children.length;
                 precedingSiblingNote.children[nextPosition] = note;
+                parent.children.splice(index, 1);
+                moveNoteFocus(1);
                 $timeout(function(){ // wait for the DOM to update
                     moveNoteFocus(-1);
-                    parent.children.splice(index, 1);
                 });
             }
             else { // dedent
