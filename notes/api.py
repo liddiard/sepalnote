@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.forms.models import model_to_dict
 from django.db import transaction
+from django.core.exceptions import ValidationError
 
 from .models import Note, UserProfile
 
@@ -116,21 +117,19 @@ def indent(user, note_id, indent):
     position = note.position
     if indent:
         preceding_sibling_note = Note.objects.filter(parent=parent,
-                                                    position__lt=position)\
-                                             .order_by('position').last()
+                                                     position__lt=position)\
+                                                   .order_by('position').last()
         if not preceding_sibling_note:
-            return self.validation_error('This note can\'t be indented '
-                                         'because it has no preceding '
-                                         'siblings.')
+            raise ValidationError('This note can\'t be indented because it '
+                                  'has no preceding siblings.')
         next_position = preceding_sibling_note.next_child_position()
         note.parent = preceding_sibling_note
         note.position = next_position
         note.save()
     else: # dedent
         if parent is None:
-            return self.validation_error('This note can\'t be dedented '
-                                         'because it is already at the '
-                                         'top level.')
+            raise ValidationError('This note can\'t be dedented because it is '
+                                  'already at the top level.')
         succeeding_siblings_of_parent = Note.objects.filter(
                                             parent=parent.parent,
                                             position__gt=parent.position)\
