@@ -1,0 +1,4 @@
+<input ng-keydown="notes.keyHandler(note, parent, $index, $event)" ng-model="note.text"></input>
+<ul>
+    <li ng-repeat="note in note.children | filter:note.expanded_in_major_pane" ng-init="parent = $parent.$parent.note" ng-include="'/fragment/note-major/'"></li>
+</ul>

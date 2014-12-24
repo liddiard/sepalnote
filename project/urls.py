@@ -10,7 +10,8 @@ urlpatterns = patterns('',
     url(r'^note/', views.NotesView.as_view(), name='notes'),
 
     # fragments
-    url(r'^fragment/note/', views.NoteFragmentView.as_view()),
+    url(r'^fragment/note-major/', views.MajorNoteFragmentView.as_view()),
+    url(r'^fragment/note-minor/', views.MinorNoteFragmentView.as_view()),
 
     # api
     url(r'^api/note/tree/$', views.NotesTreeView.as_view(), name='note_list'),
