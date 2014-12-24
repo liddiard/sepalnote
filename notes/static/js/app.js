@@ -10,8 +10,7 @@
 
     app.controller('NotesController', function($http, $scope, $timeout) {
         var controller = this;
-        this.major_tree = [];
-        this.minor_tree = [];
+        this.tree = [];
         this.diff = []; // holds diff not yet sent to backend
 
         this.keyHandler = function(note, parent, index, event) {
@@ -100,8 +99,8 @@
         };
 
 
-        $http.get('/api/note/list/').success(function(data){
-            controller.major_tree = data;
+        $http.get('/api/note/tree/').success(function(data){
+            controller.tree = data;
         });
 
         window.setInterval(controller.applyDiff, 5000);

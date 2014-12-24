@@ -23,7 +23,7 @@ def get_note_children(response, root):
 
 # api functions
 
-def list(user):
+def tree(user):
     profile = UserProfile.objects.get(user=user)
     focused_note = profile.focused_note
     return get_note_children({}, root=focused_note)

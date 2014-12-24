@@ -69,10 +69,10 @@ class AuthenticatedAjaxView(AjaxView):
 
 # api views
 
-class NotesListView(AuthenticatedAjaxView):
+class NotesTreeView(AuthenticatedAjaxView):
 
     def get(self, request):
-        tree = api.list(request.user)
+        tree = api.tree(request.user)
         return self.success(note=tree)
 
 
