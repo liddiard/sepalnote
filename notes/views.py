@@ -23,9 +23,14 @@ class NotesView(TemplateView):
 
 
 
-class NoteFragmentView(TemplateView):
+class MajorNoteFragmentView(TemplateView):
 
-    template_name = "include/note.html"
+    template_name = "include/note_major.html"
+
+
+class MinorNoteFragmentView(TemplateView):
+
+    template_name = "include/note_minor.html"
 
 
 # abstract base classes
@@ -72,8 +77,8 @@ class AuthenticatedAjaxView(AjaxView):
 class NotesTreeView(AuthenticatedAjaxView):
 
     def get(self, request):
-        tree = api.tree(request.user)
-        return self.success(note=tree)
+        tree, focused_note_path = api.tree(request.user)
+        return self.success(tree=tree, focused_note_path=focused_note_path)
 
 
 class SearchNotesView(AuthenticatedAjaxView):

@@ -20,13 +20,26 @@ def get_note_children(response, root):
                                 child.parent.expanded_in_minor_pane]
     return response # base case
 
+def get_note_path(note):
+    path = []
+    path.append(note.position)
+    while note.parent is not None:
+        path[:0] = [note.parent.position] # prepend to list
+        note = note.parent
+    return path
+
 
 # api functions
 
 def tree(user):
     profile = UserProfile.objects.get(user=user)
     focused_note = profile.focused_note
-    return get_note_children({}, root=focused_note)
+    root_notes = profile.root_notes()
+    tree = []
+    for note in root_notes:
+        tree.append(get_note_children({}, root=note))
+    focused_note_path = get_note_path(focused_note)
+    return (tree, focused_note_path)
 
 def search(user, query):
     search_results = Note.objects.filter(user=user,
