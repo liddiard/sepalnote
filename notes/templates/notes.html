@@ -6,14 +6,14 @@
 
     <aside class="notes">
         <ul>
-            <li ng-repeat="note in notes.tree.note.children | filter:note.exapnded_in_minor_pane" ng-init="parent = notes.tree.note" ng-include="'/fragment/note-minor/'"></li>
+            <li ng-repeat="note in notes.tree.tree" ng-init="parent = notes.tree.tree[$index]" ng-include="'/fragment/note-minor/'"></li>
         </ul>
     </aside>
 
     <main class="notes">
-        <h1>{% verbatim %}{{notes.tree.note.text}}{% endverbatim %}</h1>
+        <h1>{% verbatim %}{{notes.noteFromPath(notes.tree.focused_note_path).text}}{% endverbatim %}</h1>
         <ul>
-            <li ng-repeat="note in notes.tree.note.children | filter:note.exapnded_in_major_pane" ng-init="parent = notes.tree.note" ng-include="'/fragment/note-major/'"></li>
+            <li ng-repeat="note in notes.noteFromPath(notes.tree.focused_note_path).children" ng-init="parent = notes.noteFromPath(notes.tree.focused_note_path)" ng-include="'/fragment/note-major/'"></li>
         <ul>
     </main>
 
