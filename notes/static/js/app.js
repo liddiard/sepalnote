@@ -28,9 +28,11 @@
 
 
         this.noteFromPath = function(path) {
-            var note = controller.major_tree;
-            for (var i = 0; i < path.length-1; i++) {
-                note = note[path[i]];
+            if (typeof path === 'undefined')
+                return;
+            var note = controller.tree.tree[path[0]];
+            for (var i = 1; i < path.length; i++) {
+                note = note.children[path[i]];
             }
             return note;
         };
@@ -77,8 +79,15 @@
         this.indentNote = function(note, parent, index, event, indent) {
             event.preventDefault();
             if (indent) {
-                if (index > 0)
-                    var precedingSiblingNote = parent.children[index-1];
+                var top_level_note = !note.parent;
+
+                if (index > 0) {
+                    var precedingSiblingNote;
+                    if (top_level_note)
+                        precedingSiblingNote = controller.tree.tree[index-1];
+                    else
+                        precedingSiblingNote = parent.children[index-1];
+                }
                 else
                     return; // note can't be indented because there are no
                             // preceding sibling notes
@@ -87,14 +96,20 @@
                     precedingSiblingNote.children = [];
                 nextPosition = precedingSiblingNote.children.length;
                 precedingSiblingNote.children[nextPosition] = note;
-                parent.children.splice(index, 1);
+                if (top_level_note)
+                    controller.tree.tree.splice(index, 1);
+                else
+                    parent.children.splice(index, 1);
                 moveNoteFocus(1); // move focus off note that's getting deleted
                 $timeout(function(){ // wait for the DOM to update
                     moveNoteFocus(-1); // move focus back to indented note
                 });
             }
-            else { // dedent
 
+            else { // dedent
+                if (top_level_note)
+                    return; // note is at the top level; can't be dedented
+                
             }
         };
 
