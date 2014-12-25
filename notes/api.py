@@ -75,7 +75,7 @@ def update(user, note_id, text):
     return note
 
 def delete(user, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
+    note = get_object_or_404(Note, pk=note_id, user=user)
     parent = note.parent
     position = note.position
     following_sibling_notes = Note.objects.filter(parent=parent,
@@ -112,7 +112,7 @@ def delete(user, note_id):
     return dedent
 
 def expand_collapse(user, note_id, major_pane):
-    note = Note.objects.get(id=note_id, user=request.user)
+    note = Note.objects.get(pk=note_id, user=user)
     if major_pane:
         note.expanded_in_major_pane = expanded =\
                                             not note.expanded_in_major_pane
@@ -127,7 +127,7 @@ def expand_collapse(user, note_id, major_pane):
         return (note, None)
 
 def indent(user, note_id, indent):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
+    note = get_object_or_404(Note, pk=note_id, user=user)
     parent = note.parent
     position = note.position
     if indent:
@@ -158,7 +158,7 @@ def indent(user, note_id, indent):
     return note
 
 def change_permissions(user, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
+    note = get_object_or_404(Note, pk=note_id, user=user)
     def set_permissions(root):
         root.public = public
         root.save()
@@ -169,7 +169,7 @@ def change_permissions(user, note_id):
     return note
 
 def update_focus(user, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
-    profile = UserProfile.objects.get(user=request.user)
+    note = get_object_or_404(Note, pk=note_id, user=user)
+    profile = UserProfile.objects.get(user=user)
     profile.focused_note = note
     profile.save()

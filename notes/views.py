@@ -185,7 +185,7 @@ class ExpandCollapseNoteView(AuthenticatedAjaxView):
                                   'request.')
         major_pane = json.loads(major_pane)
         note, tree = api.expand_collapse(request.user, note_id, major_pane)
-        return self.success(id=note.id, major_pane=major_pane,
+        return self.success(id=note.pk, major_pane=major_pane,
                             tree=tree)
 
 
@@ -206,7 +206,7 @@ class IndentNoteView(AuthenticatedAjaxView):
                                   'request.')
         indent = json.loads(indent)
         note = api.indent(request.user, note_id, indent)
-        return self.success(id=note.id, indent=indent)
+        return self.success(id=note.pk, indent=indent)
 
 
 class ChangeNotePermissionsView(AuthenticatedAjaxView):
@@ -226,7 +226,7 @@ class ChangeNotePermissionsView(AuthenticatedAjaxView):
                                   'request.')
         public = json.loads(public)
         note = api.change_permissions(request.user, note_id, public)
-        return self.success(id=note.id)
+        return self.success(id=note.pk)
 
 
 class UpdateFocusedNoteView(AuthenticatedAjaxView):
@@ -241,4 +241,4 @@ class UpdateFocusedNoteView(AuthenticatedAjaxView):
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
         note = api.update_focus(request.user, note_id)
-        return self.success(id=note.id)
+        return self.success(id=note.pk)
