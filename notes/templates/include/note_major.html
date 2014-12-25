@@ -1,4 +1,4 @@
-<input ng-keydown="notes.keyHandler(note, parent, $index, $event)" ng-model="note.text"></input>
+<input ng-keydown="notes.keyHandler(note, path, $index, $event)" ng-model="note.text"></input>
 <ul ng-init="parentNote = note">
-    <li ng-if="parentNote.expanded_in_major_pane" ng-repeat="note in note.children" ng-init="parent = $parent.$parent.note" ng-include="'/fragment/note-major/'"></li>
+    <li ng-if="parentNote.expanded_in_major_pane" ng-repeat="note in note.children" ng-init="path = path.concat([$index])" ng-include="'/fragment/note-major/'"></li>
 </ul>

@@ -13,13 +13,13 @@
         this.tree = [];
         this.diff = []; // holds diff not yet sent to backend
 
-        this.keyHandler = function(note, parent, index, event) {
+        this.keyHandler = function(note, path, index, event) {
             if (event.keyCode === 13) // enter
-                controller.addNote(index, parent);
+                controller.addNote(index, path);
             else if (event.shiftKey && event.keyCode === 9)
-                controller.indentNote(note, parent, index, event, false);
+                controller.indentNote(note, path, index, event, false);
             else if (event.keyCode === 9) // tab
-                controller.indentNote(note, parent, index, event, true);
+                controller.indentNote(note, path, index, event, true);
             else if (event.keyCode === 8) // backspace
                 console.log('backspace pressed');
             else
@@ -30,6 +30,8 @@
         this.noteFromPath = function(path) {
             if (typeof path === 'undefined')
                 return;
+            if (path.length === 0)
+                return controller.tree.tree; // note is a root note
             var note = controller.tree.tree[path[0]];
             for (var i = 1; i < path.length; i++) {
                 note = note.children[path[i]];
@@ -37,6 +39,7 @@
             return note;
         };
 
+        // TODO: remove if unused
         this.noteFromId = function(id) {
             var note;
             for (var i = 0; i < controller.tree.tree.length; i++) {
@@ -68,7 +71,8 @@
         };
 
 
-        this.addNote = function(insertAfter, parent) {
+        this.addNote = function(insertAfter, path) {
+            var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
             var note = {
                 uuid: generateUUID(),
                 parent: parent.uuid,
@@ -94,9 +98,10 @@
             }, 5000);
         };
 
-        this.indentNote = function(note, parent, index, event, indent) {
+        this.indentNote = function(note, path, index, event, indent) {
             event.preventDefault();
-            var top_level_note = (note.uuid === parent.uuid);
+            var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
+            var top_level_note = (path.length === 1);
 
             if (indent) {
                 if (index > 0) {
@@ -127,8 +132,11 @@
             else { // dedent
                 if (top_level_note)
                     return; // note is at the top level; can't be dedented
-                var grandparent = controller.noteFromId(parent.parent);
-                grandparent.children.splice(grandparent.children.indexOf(parent)+1, 0, note);
+                var grandparent = controller.noteFromPath(path.slice(0, -2)); // full path except last two
+                if (path.length === 2)
+                    grandparent.splice(grandparent.indexOf(parent), 0, note);
+                else
+                    grandparent.children.splice(grandparent.children.indexOf(parent), 0, note);
                 parent.children.splice(index, 1);
             }
         };
