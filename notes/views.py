@@ -100,6 +100,10 @@ class DiffNoteView(AuthenticatedAjaxView):
             elif change['kind'] == 'C':
                 api.insert(request.user, note['uuid'], note['parent'],
                            note['position'], note['text'])
+            elif change['kind'] == 'I':
+                api.indent(request.user, note['uuid'], True)
+            elif change['kind'] == 'D':
+                api.indent(request.user, note['uuid'], False)
             else:
                 print change
         return self.success()

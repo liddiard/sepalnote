@@ -133,16 +133,18 @@
                 if (!note.hasOwnProperty('children'))
                     note.children = [];
                 note.children.push.apply(note.children, succeeding_siblings_of_parent);
-                console.log(note);
                 if (path.length === 2)
                     grandparent.splice(grandparent.indexOf(parent)+1, 0, note);
                 else
                     grandparent.children.splice(grandparent.children.indexOf(parent)+1, 0, note);
                 parent.children.splice(index, 1);
             }
+
             $timeout(function(){ // wait for the DOM to update
-                moveNoteFocus(note.uuid, major_pane); // move focus back to indented note
+                moveNoteFocus(note.uuid, major_pane);
             });
+            var kind = indent ? "I" : "D";
+            controller.diff.push({note: note, kind: kind});
         };
 
 
