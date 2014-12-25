@@ -68,7 +68,6 @@ def add(user, note_id, parent_id, position, text):
     return new_note
 
 def update(user, note_id, text):
-    print note_id
     note = get_object_or_404(Note, pk=note_id, user=user)
     note.text = text
     note.save()
