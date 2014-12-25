@@ -13,6 +13,8 @@ def get_note_children(response, root):
     if root:
         response = model_to_dict(root)
         response['uuid'] = str(response['uuid']) # js can't handle long numbers
+        if response['parent']:
+            response['parent'] = str(response['parent'])
     if children:
         response['children'] = [get_note_children(response, child) for child
                                 in children if

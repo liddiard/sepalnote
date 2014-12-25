@@ -17,7 +17,7 @@
             if (event.keyCode === 13) // enter
                 controller.addNote(index, parent);
             else if (event.shiftKey && event.keyCode === 9)
-                console.log('dedent note');
+                controller.indentNote(note, parent, index, event, false);
             else if (event.keyCode === 9) // tab
                 controller.indentNote(note, parent, index, event, true);
             else if (event.keyCode === 8) // backspace
@@ -35,6 +35,24 @@
                 note = note.children[path[i]];
             }
             return note;
+        };
+
+        this.noteFromId = function(id) {
+            var note;
+            for (var i = 0; i < controller.tree.tree.length; i++) {
+                note = search(id, controller.tree.tree[i]);
+                if (note) return note;
+            }
+
+            function search(id, root) {
+                if (root.uuid === id)
+                    return root;
+                if (!root.children)
+                    return;
+                for (var i = 0; i < root.children.length; i++) {
+                    search(id, root.children[i]);
+                }
+            }
         };
 
         this.applyDiff = function() {
@@ -78,9 +96,9 @@
 
         this.indentNote = function(note, parent, index, event, indent) {
             event.preventDefault();
-            if (indent) {
-                var top_level_note = !note.parent;
+            var top_level_note = (note.uuid === parent.uuid);
 
+            if (indent) {
                 if (index > 0) {
                     var precedingSiblingNote;
                     if (top_level_note)
@@ -109,7 +127,9 @@
             else { // dedent
                 if (top_level_note)
                     return; // note is at the top level; can't be dedented
-                
+                var grandparent = controller.noteFromId(parent.parent);
+                grandparent.children.splice(grandparent.children.indexOf(parent)+1, 0, note);
+                parent.children.splice(index, 1);
             }
         };
 
