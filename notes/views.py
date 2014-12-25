@@ -4,8 +4,6 @@ import jsonpickle
 
 from django.http import HttpResponse
 from django.views.generic.base import View, TemplateView
-from django.utils.decorators import method_decorator # TODO: remove
-from django.views.decorators.csrf import csrf_exempt # TODO: remove
 
 from . import api
 
