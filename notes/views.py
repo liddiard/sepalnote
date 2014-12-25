@@ -109,11 +109,6 @@ class DiffNoteView(AuthenticatedAjaxView):
 
 class AddNoteView(AuthenticatedAjaxView):
 
-    # TODO: remove
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(AddNoteView, self).dispatch(*args, **kwargs)
-
     def post(self, request):
         parent_id = request.POST.get('parent')
         if parent_id is None:
@@ -137,11 +132,6 @@ class AddNoteView(AuthenticatedAjaxView):
 
 class UpdateNoteView(AuthenticatedAjaxView):
 
-    # TODO: remove
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(UpdateNoteView, self).dispatch(*args, **kwargs)
-
     def post(self, request):
         note_id = request.POST.get('id')
         if note_id is None:
@@ -155,11 +145,6 @@ class UpdateNoteView(AuthenticatedAjaxView):
 
 class DeleteNoteView(AuthenticatedAjaxView):
 
-    # TODO: remove
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(DeleteNoteView, self).dispatch(*args, **kwargs)
-
     def post(self, request):
         note_id = request.POST.get('id')
         if note_id is None:
@@ -169,11 +154,6 @@ class DeleteNoteView(AuthenticatedAjaxView):
 
 
 class ExpandCollapseNoteView(AuthenticatedAjaxView):
-
-    # TODO: remove
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(ExpandCollapseNoteView, self).dispatch(*args, **kwargs)
 
     def post(self, request):
         note_id = request.POST.get('id')
@@ -191,11 +171,6 @@ class ExpandCollapseNoteView(AuthenticatedAjaxView):
 
 class IndentNoteView(AuthenticatedAjaxView):
 
-    # TODO: remove
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(IndentNoteView, self).dispatch(*args, **kwargs)
-
     def post(self, request):
         note_id = request.POST.get('id')
         if note_id is None:
@@ -211,11 +186,6 @@ class IndentNoteView(AuthenticatedAjaxView):
 
 class ChangeNotePermissionsView(AuthenticatedAjaxView):
 
-    # TODO: remove
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(ChangeNotePermissionsView, self).dispatch(*args, **kwargs)
-
     def post(self, request):
         note_id = request.POST.get('id')
         if note_id is None:
@@ -230,11 +200,6 @@ class ChangeNotePermissionsView(AuthenticatedAjaxView):
 
 
 class UpdateFocusedNoteView(AuthenticatedAjaxView):
-
-    # TODO: remove
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(ChangeNotePermissionsView, self).dispatch(*args, **kwargs)
 
     def post(self, request):
         note_id = request.POST.get('id')
