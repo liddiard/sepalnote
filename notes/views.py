@@ -98,8 +98,8 @@ class DiffNoteView(AuthenticatedAjaxView):
             if change['kind'] == 'U':
                 api.update(request.user, note['uuid'], note['text'])
             elif change['kind'] == 'C':
-                api.add(request.user, note['uuid'], note['parent'],
-                        note['position'], note['text'])
+                api.insert(request.user, note['uuid'], note['parent'],
+                           note['position'], note['text'])
             else:
                 print change
         return self.success()
@@ -124,7 +124,7 @@ class AddNoteView(AuthenticatedAjaxView):
         except ValueError:
             return self.validation_error('Could not convert (parent) %s to an '
                                          'integer.' % parent_id)
-        new_note = api.add(request.user, parent_id, position, text)
+        new_note = api.insert(request.user, parent_id, position, text)
         return self.success(uuid=new_note.uuid)
 
 

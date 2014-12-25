@@ -9,6 +9,12 @@ from .models import Note, UserProfile
 # utility functions
 
 def get_note_children(response, root):
+    '''
+    Recursive function which constructs a tree of notes that are expanded in
+    the major or minor panes, starting at the specified root. Should be called
+    with 'response' as an empty dictionary which the function will populate
+    recursively.
+    '''
     children = root.immediate_children()
     if root:
         response = model_to_dict(root)
@@ -23,6 +29,10 @@ def get_note_children(response, root):
     return response # base case
 
 def get_note_path(note):
+    '''
+    Get the path of a note relative to the root of the tree. Returns a list of
+    indices.
+    '''
     path = []
     path.append(note.position)
     while note.parent is not None:
@@ -34,6 +44,11 @@ def get_note_path(note):
 # api functions
 
 def tree(user):
+    '''
+    Get a user's tree – a nested dictionary of all notes that are expaned
+    either in the major and minor panes – and a path to the user's focused
+    note.
+    '''
     profile = UserProfile.objects.get(user=user)
     focused_note = profile.focused_note
     root_notes = profile.root_notes()
@@ -44,11 +59,20 @@ def tree(user):
     return (tree, focused_note_path)
 
 def search(user, query):
+    '''
+    Case-insensitive search though a user's notes for the specified query.
+    Returns a dictionary of matching notes.
+    '''
     search_results = Note.objects.filter(user=user,
                                          text__icontains=query)
     return [model_to_dict(result) for result in search_results]
 
-def add(user, note_id, parent_id, position, text):
+def insert(user, note, parent_id, position, text=''):
+    '''
+    Inserts a Note with a specified parent at the specified position. 'note'
+    can be either a primary key or a Note object. If a Note object is passed,
+    the 'text' argument is ignored.
+    '''
     if parent_id == 0: # this will be a top-level note
         parent_note = None
     else:
@@ -61,20 +85,33 @@ def add(user, note_id, parent_id, position, text):
             # shift subsequent notes down to make room for the new one
             note.position += 1
             note.save()
-        new_note = Note(pk=note_id, parent=parent_note, position=position,
-                        text=text, user=user,
-                        number=parent_note.next_note_number())
+        if isinstance(note, Note):
+            new_note = note
+            new_note.parent = parent_note
+            new_note.position = position
+        else:
+            new_note = Note(pk=note_id, parent=parent_note, position=position,
+                            text=text, user=user,
+                            number=parent_note.next_note_number())
         new_note.save()
     return new_note
 
 def update(user, note_id, text):
+    '''
+    Update a note with the supplied text.
+    '''
     note = get_object_or_404(Note, pk=note_id, user=user)
     note.text = text
     note.save()
     return note
 
-def delete(user, note_id):
-    note = get_object_or_404(Note, pk=note_id, user=user)
+def delete(user, note):
+    '''
+    Delete a note at the specified postion, shift its siblings and children
+    accordingly. 'note' can be either a primary key or a Note object.
+    '''
+    if not isinstance(note, Note):
+        note = get_object_or_404(Note, pk=note, user=user)
     parent = note.parent
     position = note.position
     following_sibling_notes = Note.objects.filter(parent=parent,
@@ -111,6 +148,11 @@ def delete(user, note_id):
     return dedent
 
 def expand_collapse(user, note_id, major_pane):
+    '''
+    Toggle a note's expanded/collapsed state. Returns a tuple. If the note
+    was expanded, the second value of the tuple contains a tree of the note's
+    children.
+    '''
     note = Note.objects.get(pk=note_id, user=user)
     if major_pane:
         note.expanded_in_major_pane = expanded =\
@@ -126,6 +168,10 @@ def expand_collapse(user, note_id, major_pane):
         return (note, None)
 
 def indent(user, note_id, indent):
+    '''
+    Indent or dedent a note with the specified primary key. 'indent' should be
+    a boolean: True for indent, False for dedent.
+    '''
     note = get_object_or_404(Note, pk=note_id, user=user)
     parent = note.parent
     position = note.position
@@ -157,6 +203,10 @@ def indent(user, note_id, indent):
     return note
 
 def change_permissions(user, note_id):
+    '''
+    Recursively change permissions of a note starting with the specified
+    primary key.
+    '''
     note = get_object_or_404(Note, pk=note_id, user=user)
     def set_permissions(root):
         root.public = public
@@ -168,6 +218,10 @@ def change_permissions(user, note_id):
     return note
 
 def update_focus(user, note_id):
+    '''
+    Update (or set) a user's focused note – the note that shows up at the top
+    of the major pane.
+    '''
     note = get_object_or_404(Note, pk=note_id, user=user)
     profile = UserProfile.objects.get(user=user)
     profile.focused_note = note
