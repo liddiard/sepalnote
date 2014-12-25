@@ -14,14 +14,24 @@
         this.diff = []; // holds diff not yet sent to backend
 
         this.keyHandler = function(note, path, major_pane, index, event) {
+            var caretPosition = getCaretPosition(document.activeElement);
+
             if (event.keyCode === 13) // enter
                 controller.addNote(index, path, major_pane);
-            else if (event.shiftKey && event.keyCode === 9)
+
+            else if (event.shiftKey && event.keyCode === 9) // shift + tab
                 controller.indentNote(note, path, major_pane, index, event, false);
+
             else if (event.keyCode === 9) // tab
                 controller.indentNote(note, path, major_pane, index, event, true);
-            else if (event.keyCode === 8) // backspace
-                console.log('backspace pressed');
+
+            else if (event.keyCode === 8 && !caretPosition) { // backspace (cursor at the beginning of input field)
+                if (document.activeElement.value) // input field is NOT empty
+                    controller.indentNote(note, path, major_pane, index, event, false);
+                else // input field is empty
+                    controller.deleteNote();
+            }
+
             else
                 controller.updateNote(note);
         };
@@ -96,6 +106,10 @@
             this.timeoutId = window.setTimeout(function(){
                 controller.diff.push({note: note, kind: 'U'});
             }, 5000);
+        };
+
+        this.deleteNote = function() {
+            // TODO
         };
 
         this.indentNote = function(note, path, major_pane, index, event, indent) {

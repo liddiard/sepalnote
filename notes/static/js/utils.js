@@ -34,3 +34,36 @@ function generateUUID() {
         return Math.floor(Math.random() * (max + 1));
     }
 }
+
+
+// Returns the caret (cursor) position of the specified text field.
+// Return value range is 0 – elem.value.length.
+// http://stackoverflow.com/a/2897229
+function getCaretPosition (elem) {
+
+    // Initialize
+    var iCaretPos = 0;
+
+    // IE Support
+    if (document.selection) {
+
+        // Set focus on the element
+        elem.focus();
+
+        // To get cursor position, get empty selection range
+        var oSel = document.selection.createRange();
+
+        // Move selection start to 0 position
+        oSel.moveStart ('character', -elem.value.length);
+
+        // The caret position is selection length
+        iCaretPos = oSel.text.length;
+    }
+
+    // Firefox support
+    else if (elem.selectionStart || elem.selectionStart == '0')
+        iCaretPos = elem.selectionStart;
+
+    // Return results
+    return (iCaretPos);
+}
