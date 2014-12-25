@@ -175,6 +175,9 @@ def indent(user, note_id, indent):
     note = get_object_or_404(Note, pk=note_id, user=user)
     parent = note.parent
     position = note.position
+    succeeding_siblings_of_note = Note.objects.filter(parent=parent,
+                                                  position__gt=note.position)\
+                                                  .order_by('-position')
     if indent:
         preceding_sibling_note = Note.objects.filter(parent=parent,
                                                      position__lt=position)\
@@ -183,22 +186,36 @@ def indent(user, note_id, indent):
             raise ValidationError('This note can\'t be indented because it '
                                   'has no preceding siblings.')
         next_position = preceding_sibling_note.next_child_position()
-        note.parent = preceding_sibling_note
-        note.position = next_position
-        note.save()
+        with transaction.atomic():
+            note.parent = preceding_sibling_note
+            note.position = next_position
+            note.save()
+            for sibling in succeeding_siblings_of_note:
+                sibling.position -= 1
+                sibling.save()
     else: # dedent
         if parent is None:
             raise ValidationError('This note can\'t be dedented because it is '
                                   'already at the top level.')
         succeeding_siblings_of_parent = Note.objects.filter(
-                                            parent=parent.parent,
-                                            position__gt=parent.position)\
-                                            .order_by('-position')
+                                                   parent=parent.parent,
+                                                 position__gt=parent.position)\
+                                                 .order_by('-position')
+        immediate_children = note.immediate_children()
+        if immediate_children:
+            last_child_position = immediate_children.last().position
+        else:
+            last_child_position = 0
         with transaction.atomic():
+            for pos, sibling in enumerate(succeeding_siblings_of_note):
+                sibling.parent = note
+                sibling.position = last_child_position + pos
+                sibling.save()
             for sibling in succeeding_siblings_of_parent:
                 sibling.position += 1
                 sibling.save()
             note.parent = parent.parent
+            note.position = parent.position + 1
             note.save()
     return note
 
