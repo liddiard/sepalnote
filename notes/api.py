@@ -45,8 +45,8 @@ def get_note_path(note):
 
 def tree(user):
     '''
-    Get a user's tree – a nested dictionary of all notes that are expaned
-    either in the major and minor panes – and a path to the user's focused
+    Get a user's tree (a nested dictionary of all notes that are expaned
+    either in the major and minor panes) and a path to the user's focused
     note.
     '''
     profile = UserProfile.objects.get(user=user)
@@ -219,8 +219,8 @@ def change_permissions(user, note_id):
 
 def update_focus(user, note_id):
     '''
-    Update (or set) a user's focused note – the note that shows up at the top
-    of the major pane.
+    Update (or set) a user's focused note (the note that shows up at the top
+    of the major pane).
     '''
     note = get_object_or_404(Note, pk=note_id, user=user)
     profile = UserProfile.objects.get(user=user)
