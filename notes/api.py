@@ -90,7 +90,7 @@ def insert(user, note, parent_id, position, text=''):
             new_note.parent = parent_note
             new_note.position = position
         else:
-            new_note = Note(pk=note_id, parent=parent_note, position=position,
+            new_note = Note(pk=note, parent=parent_note, position=position,
                             text=text, user=user,
                             number=parent_note.next_note_number())
         new_note.save()
