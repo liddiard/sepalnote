@@ -13,13 +13,13 @@
         this.tree = [];
         this.diff = []; // holds diff not yet sent to backend
 
-        this.keyHandler = function(note, path, index, event) {
+        this.keyHandler = function(note, path, major_pane, index, event) {
             if (event.keyCode === 13) // enter
-                controller.addNote(index, path);
+                controller.addNote(index, path, major_pane);
             else if (event.shiftKey && event.keyCode === 9)
-                controller.indentNote(note, path, index, event, false);
+                controller.indentNote(note, path, major_pane, index, event, false);
             else if (event.keyCode === 9) // tab
-                controller.indentNote(note, path, index, event, true);
+                controller.indentNote(note, path, major_pane, index, event, true);
             else if (event.keyCode === 8) // backspace
                 console.log('backspace pressed');
             else
@@ -71,7 +71,7 @@
         };
 
 
-        this.addNote = function(insertAfter, path) {
+        this.addNote = function(insertAfter, path, major_pane) {
             var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
             var note = {
                 uuid: generateUUID(),
@@ -84,8 +84,8 @@
             else
                 parent.children.splice(insertAfter+1, 0, note);
             $timeout(function(){ // wait for the DOM to update
-                // move focus to the next (newly created) note
-                moveNoteFocus(1);
+                // move focus to the newly created note
+                moveNoteFocus(note.uuid, major_pane);
             });
             controller.diff.push({note: note, kind: 'C'});
         };
@@ -98,7 +98,7 @@
             }, 5000);
         };
 
-        this.indentNote = function(note, path, index, event, indent) {
+        this.indentNote = function(note, path, major_pane, index, event, indent) {
             event.preventDefault();
             var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
             var top_level_note = (path.length === 1);
@@ -123,22 +123,26 @@
                     controller.tree.tree.splice(index, 1);
                 else
                     parent.children.splice(index, 1);
-                moveNoteFocus(1); // move focus off note that's getting deleted
-                $timeout(function(){ // wait for the DOM to update
-                    moveNoteFocus(-1); // move focus back to indented note
-                });
             }
 
             else { // dedent
                 if (top_level_note)
                     return; // note is at the top level; can't be dedented
                 var grandparent = controller.noteFromPath(path.slice(0, -2)); // full path except last two
+                var succeeding_siblings_of_parent = parent.children.splice(index+1, parent.children.length-index);
+                if (!note.hasOwnProperty('children'))
+                    note.children = [];
+                note.children.push.apply(note.children, succeeding_siblings_of_parent);
+                console.log(note);
                 if (path.length === 2)
-                    grandparent.splice(grandparent.indexOf(parent), 0, note);
+                    grandparent.splice(grandparent.indexOf(parent)+1, 0, note);
                 else
-                    grandparent.children.splice(grandparent.children.indexOf(parent), 0, note);
+                    grandparent.children.splice(grandparent.children.indexOf(parent)+1, 0, note);
                 parent.children.splice(index, 1);
             }
+            $timeout(function(){ // wait for the DOM to update
+                moveNoteFocus(note.uuid, major_pane); // move focus back to indented note
+            });
         };
 
 

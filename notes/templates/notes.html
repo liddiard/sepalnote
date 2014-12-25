@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% verbatim %}
 
 <section ng-controller="NotesController as notes" id="notes">
 
@@ -11,7 +12,7 @@
     </aside>
 
     <main class="notes">
-        <h1>{% verbatim %}{{notes.noteFromPath(notes.tree.focused_note_path).text}}{% endverbatim %}</h1>
+        <h1>{{notes.noteFromPath(notes.tree.focused_note_path).text}}</h1>
         <ul>
             <li ng-repeat="note in notes.noteFromPath(notes.tree.focused_note_path).children" ng-init="path = notes.tree.focused_note_path.concat($index)" ng-include="'/fragment/note-major/'"></li>
         <ul>
@@ -19,4 +20,5 @@
 
 </section>
 
+{% endverbatim %}
 {% endblock %}
