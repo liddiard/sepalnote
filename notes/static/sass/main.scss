@@ -1,11 +1,17 @@
 $helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $background-color: #fffefb;
-$primary_color: #6700A0;
+$font-color: #442A0A;
+$primary-color: #6700A0;
 $sidebar-width: 300px;
+$edge-trim: 1px solid #EBDFCC;
+
+::-webkit-input-placeholder {
+    color: rgba($font-color, 0.25);
+}
 
 body {
     font-family: $helvetica;
-    color: #442A0A;
+    color: $font-color;
     background-color: $background-color;
     margin: 0;
     border: 0;
@@ -33,6 +39,29 @@ dfn {
     cursor: pointer;
 }
 
+ul#menu {
+    position: absolute;
+    top: 0; right: 0;
+    font-size: 0.7em;
+    margin: 0.5em;
+    padding: 0;
+    z-index: 10;
+
+    li {
+        display: inline-block;
+        margin: 0 0.25em;
+
+        a {
+            text-decoration: none;
+            color: rgba($font-color, 0.6);
+
+            &:hover {
+                color: rgba($font-color, 0.8);
+            }
+        }
+    }
+}
+
 main.notes {
     position: absolute;
     height: 100%;
@@ -40,20 +69,50 @@ main.notes {
     left: $sidebar-width;
     right: 0;
     box-sizing: border-box;
-    padding: 0 1em;
+    padding: 0 1rem;
+
+    h1 {
+        font-weight: normal;
+        margin-bottom: 0;
+    }
 }
 
 aside.notes {
+    $horizontal-padding: 1rem;
+    $box-shadow: -10px 0 10px -10px rgba(0,0,0, 0.1) inset;
     position: absolute;
     height: 100%;
     width: $sidebar-width;
     overflow-x: auto;
-    border-right: 1px solid #EBDFCC;
+    border-right: $edge-trim;
     background-color: $background-color - #000007;
-    box-shadow: -10px 0 10px -10px rgba(0,0,0, 0.1) inset;
+    box-shadow: $box-shadow;
     white-space: nowrap;
     box-sizing: border-box;
-    padding: 0 1em;
+    padding: 0 $horizontal-padding;
+
+    input#search {
+        width: 100%;
+        margin: 0;
+        margin-left: -$horizontal-padding;
+        padding: 0.5em $horizontal-padding;
+        font-size: 1em;
+        outline: none;
+        border: 0;
+        background-color: rgba($background-color, 0.65);
+        border-top: $edge-trim; border-bottom: $edge-trim;
+        box-shadow: $box-shadow;
+        font-family: $helvetica, 'FontAwesome';
+
+        &:focus {
+            background-color: $background-color;
+        }
+    }
+
+    .logo {
+        margin: 0.2em 0 0.15em;
+        font-size: 2em;
+    }
 }
 
 section.front {
@@ -66,7 +125,7 @@ section.front {
 .logo {
     font-family: 'Laila', sans-serif;
     font-weight: normal;
-    color: $primary_color;
+    color: $primary-color;
 
     &.front {
         font-size: 3.5em;
@@ -76,7 +135,7 @@ section.front {
 }
 
 .tagline {
-    color: $primary_color;
+    color: $primary-color;
     font-weight: bold;
     font-size: 1.2em;
     margin: 0;
@@ -111,7 +170,8 @@ section.front {
                 resize: none;
                 outline: none;
                 width: 100%;
-                border: 1px solid red; // TODO: for debug. remove.
+                color: $font-color;
+                //border: 1px solid red; // TODO: for debug. remove.
             }
 
             &.selected {

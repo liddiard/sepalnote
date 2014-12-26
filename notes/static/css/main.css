@@ -1,3 +1,6 @@
+::-webkit-input-placeholder {
+  color: rgba(68, 42, 10, 0.25); }
+
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #442A0A;
@@ -20,6 +23,23 @@ dfn {
   color: #30AA00;
   cursor: pointer; }
 
+ul#menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.7em;
+  margin: 0.5em;
+  padding: 0;
+  z-index: 10; }
+  ul#menu li {
+    display: inline-block;
+    margin: 0 0.25em; }
+    ul#menu li a {
+      text-decoration: none;
+      color: rgba(68, 42, 10, 0.6); }
+      ul#menu li a:hover {
+        color: rgba(68, 42, 10, 0.8); }
+
 main.notes {
   position: absolute;
   height: 100%;
@@ -27,7 +47,10 @@ main.notes {
   left: 300px;
   right: 0;
   box-sizing: border-box;
-  padding: 0 1em; }
+  padding: 0 1rem; }
+  main.notes h1 {
+    font-weight: normal;
+    margin-bottom: 0; }
 
 aside.notes {
   position: absolute;
@@ -39,7 +62,25 @@ aside.notes {
   box-shadow: -10px 0 10px -10px rgba(0, 0, 0, 0.1) inset;
   white-space: nowrap;
   box-sizing: border-box;
-  padding: 0 1em; }
+  padding: 0 1rem; }
+  aside.notes input#search {
+    width: 100%;
+    margin: 0;
+    margin-left: -1rem;
+    padding: 0.5em 1rem;
+    font-size: 1em;
+    outline: none;
+    border: 0;
+    background-color: rgba(255, 254, 251, 0.65);
+    border-top: 1px solid #EBDFCC;
+    border-bottom: 1px solid #EBDFCC;
+    box-shadow: -10px 0 10px -10px rgba(0, 0, 0, 0.1) inset;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, "FontAwesome"; }
+    aside.notes input#search:focus {
+      background-color: #fffefb; }
+  aside.notes .logo {
+    margin: 0.2em 0 0.15em;
+    font-size: 2em; }
 
 section.front {
   max-width: 640px;
@@ -86,7 +127,7 @@ section.front {
     resize: none;
     outline: none;
     width: 100%;
-    border: 1px solid red; }
+    color: #442A0A; }
   .notes ul li.selected {
     background-color: rgba(210, 220, 255, 0.75); }
 .notes > ul {
