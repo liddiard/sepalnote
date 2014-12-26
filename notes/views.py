@@ -104,6 +104,8 @@ class DiffNoteView(AuthenticatedAjaxView):
                 api.indent(request.user, note['uuid'], True)
             elif change['kind'] == 'D':
                 api.indent(request.user, note['uuid'], False)
+            elif change['kind'] == 'X':
+                api.delete(request.user, note['uuid'])
             else:
                 print change
         return self.success()

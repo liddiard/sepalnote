@@ -123,6 +123,7 @@
             parent.children.splice.apply(parent, [index, 0].concat(children));
                 // insert array into another array at index
                 // http://stackoverflow.com/a/7032717
+            controller.diff.push({note: note, kind: 'X'});
         };
 
         this.indentNote = function(note, path, major_pane, index, event, indent) {
