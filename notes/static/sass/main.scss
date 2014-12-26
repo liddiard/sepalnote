@@ -1,5 +1,5 @@
 $helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$background-color: #fffef0;
+$background-color: #fffefb;
 $primary_color: #6700A0;
 $sidebar-width: 300px;
 
@@ -61,7 +61,7 @@ aside.notes {
     height: 100%;
     width: $sidebar-width;
     overflow-x: auto;
-    border-right: 1px solid #E4D1B3;
+    border-right: 1px solid #EBDFCC;
     background-color: $background-color - #000007;
     box-shadow: -10px 0 10px -10px rgba(0,0,0, 0.1) inset;
     white-space: nowrap;
@@ -114,17 +114,13 @@ section.front {
 }
 
 .notes ul {
-    padding-left: 2em;
+    padding-left: 1em;
     border-left: 1px solid #BFFFA6;
     list-style-type: none;
 
     li {
-        outline: none;
-        padding: 0.12em 0;
-
         &.selected {
             background-color: rgba(210,220,255, 0.75);
         }
     }
 }
-

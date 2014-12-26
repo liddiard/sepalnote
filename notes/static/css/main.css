@@ -1,13 +1,13 @@
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #442A0A;
-  background-color: #fffef0;
+  background-color: #fffefb;
   margin: 0;
   border: 0;
   padding: 0; }
 
 a {
-  color: #4774e7;
+  color: #4774E7;
   cursor: pointer; }
   a:hover {
     color: #5885f8; }
@@ -41,8 +41,8 @@ aside.notes {
   height: 100%;
   width: 300px;
   overflow-x: auto;
-  border-right: 1px solid #E4D1B3;
-  background-color: #fffee9;
+  border-right: 1px solid #EBDFCC;
+  background-color: #fffef4;
   box-shadow: -10px 0 10px -10px rgba(0, 0, 0, 0.1) inset;
   white-space: nowrap;
   box-sizing: border-box; }
@@ -59,14 +59,14 @@ section.front {
 .logo {
   font-family: 'Laila', sans-serif;
   font-weight: normal;
-  color: #6700a0; }
+  color: #6700A0; }
   .logo.front {
     font-size: 3.5em;
     margin: 0;
     text-align: right; }
 
 .tagline {
-  color: #6700a0;
+  color: #6700A0;
   font-weight: bold;
   font-size: 1.2em;
   margin: 0;
@@ -84,11 +84,10 @@ section.front {
   box-sizing: border-box; }
 
 .notes ul {
-  padding-left: 2em;
+  padding-left: 1em;
   border-left: 1px solid #BFFFA6;
   list-style-type: none; }
-  .notes ul li {
-    outline: none;
-    padding: 0.12em 0; }
-    .notes ul li.selected {
-      background-color: rgba(210, 220, 255, 0.75); }
+  .notes ul li.selected {
+    background-color: rgba(210, 220, 255, 0.75); }
+
+/*# sourceMappingURL=main.css.map */
