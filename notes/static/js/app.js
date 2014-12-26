@@ -17,7 +17,7 @@
             var caretPosition = getCaretPosition(document.activeElement);
 
             if (event.keyCode === 13) // enter
-                controller.addNote(index, path, major_pane);
+                controller.addNote(index, path, major_pane, event);
 
             else if (event.shiftKey && event.keyCode === 9) // shift + tab
                 controller.indentNote(note, path, major_pane, index, event, false);
@@ -86,7 +86,8 @@
         };
 
 
-        this.addNote = function(insertAfter, path, major_pane) {
+        this.addNote = function(insertAfter, path, major_pane, event) {
+            event.preventDefault();
             var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
             var note = {
                 uuid: generateUUID(),
@@ -177,6 +178,14 @@
 
         $http.get('/api/note/tree/').success(function(data){
             controller.tree = data;
+
+            $timeout(function(){ // wait for the DOM to update
+                var textareas = document.getElementsByTagName('textarea');
+                console.log(textareas, textareas.length);
+                for (var i = 0; i < textareas.length; i++) {
+                    resizeTextarea(textareas[i]);
+                }
+            }, 500);
         });
 
         window.setInterval(controller.applyDiff, 5000);
