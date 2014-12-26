@@ -11,7 +11,7 @@ function getIndex(elements, element) {
 
 // move focus from current note to x # of elements forward where x is 'delta'
 function moveNoteFocus(delta) {
-    var inputs = document.getElementById('notes').getElementsByTagName('input');
+    var inputs = document.getElementById('notes').getElementsByTagName('textarea');
     angular.element(inputs).eq( getIndex(inputs, document.activeElement)+delta )[0].focus();
 }
 
