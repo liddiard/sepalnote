@@ -27,14 +27,7 @@ main.notes {
   left: 300px;
   right: 0;
   box-sizing: border-box;
-  padding-right: 1em; }
-  main.notes > ul {
-    border-left: none; }
-    main.notes > ul > li {
-      font-size: 175%; }
-    main.notes > ul > ul {
-      border-left: none;
-      padding-left: 0; }
+  padding: 0 1em; }
 
 aside.notes {
   position: absolute;
@@ -45,10 +38,8 @@ aside.notes {
   background-color: #fffef4;
   box-shadow: -10px 0 10px -10px rgba(0, 0, 0, 0.1) inset;
   white-space: nowrap;
-  box-sizing: border-box; }
-  aside.notes > ul {
-    border-left: none;
-    padding-left: 1em; }
+  box-sizing: border-box;
+  padding: 0 1em; }
 
 section.front {
   max-width: 640px;
@@ -87,7 +78,19 @@ section.front {
   padding-left: 1em;
   border-left: 1px solid #BFFFA6;
   list-style-type: none; }
+  .notes ul li textarea {
+    display: block;
+    font-size: 1em;
+    border: 0;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    width: 100%;
+    border: 1px solid red; }
   .notes ul li.selected {
     background-color: rgba(210, 220, 255, 0.75); }
+.notes > ul {
+  border-left: none;
+  padding-left: 0; }
 
 /*# sourceMappingURL=main.css.map */

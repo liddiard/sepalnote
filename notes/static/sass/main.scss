@@ -40,20 +40,7 @@ main.notes {
     left: $sidebar-width;
     right: 0;
     box-sizing: border-box;
-    padding-right: 1em;
-
-    & > ul {
-        border-left: none;
-
-        & > li {
-            font-size: 175%;
-        }
-
-        & > ul {
-            border-left: none;
-            padding-left: 0;
-        }
-    }
+    padding: 0 1em;
 }
 
 aside.notes {
@@ -66,11 +53,7 @@ aside.notes {
     box-shadow: -10px 0 10px -10px rgba(0,0,0, 0.1) inset;
     white-space: nowrap;
     box-sizing: border-box;
-
-    & > ul {
-        border-left: none;
-        padding-left: 1em;
-    }
+    padding: 0 1em;
 }
 
 section.front {
@@ -113,14 +96,32 @@ section.front {
     box-sizing: border-box;
 }
 
-.notes ul {
-    padding-left: 1em;
-    border-left: 1px solid #BFFFA6;
-    list-style-type: none;
+.notes {
+    ul {
+        padding-left: 1em;
+        border-left: 1px solid #BFFFA6;
+        list-style-type: none;
 
-    li {
-        &.selected {
-            background-color: rgba(210,220,255, 0.75);
+        li {
+            textarea {
+                display: block;
+                font-size: 1em;
+                border: 0;
+                background-color: transparent;
+                resize: none;
+                outline: none;
+                width: 100%;
+                border: 1px solid red; // TODO: for debug. remove.
+            }
+
+            &.selected {
+                background-color: rgba(210,220,255, 0.75);
+            }
         }
+    }
+
+    & > ul {
+        border-left: none;
+        padding-left: 0;
     }
 }
