@@ -9,8 +9,14 @@ function getIndex(elements, element) {
     }
 }
 
+// move focus from current note to x # of elements forward where x is 'delta'
+function moveNoteFocus(delta) {
+    var inputs = document.getElementById('notes').getElementsByTagName('input');
+    angular.element(inputs).eq( getIndex(inputs, document.activeElement)+delta )[0].focus();
+}
+
 // move focus to note with given id in given pane ('true' for major, 'false' for minor)
-function moveNoteFocus(note, major_pane) {
+function setNoteFocus(note, major_pane) {
     var pane = major_pane ? "major" : "minor";
     var id = ['input', pane, note].join('-');
     var input = document.getElementById(id);

@@ -29,8 +29,14 @@
                 if (document.activeElement.value) // input field is NOT empty
                     controller.indentNote(note, path, major_pane, index, event, false);
                 else // input field is empty
-                    controller.deleteNote();
+                    controller.deleteNote(note, path, major_pane, index, event);
             }
+
+            else if (event.keyCode === 38) // up arrow
+                moveNoteFocus(-1);
+
+            else if (event.keyCode === 40) // down arrow
+                moveNoteFocus(1);
 
             else
                 controller.updateNote(note);
@@ -95,7 +101,7 @@
                 parent.children.splice(insertAfter+1, 0, note);
             $timeout(function(){ // wait for the DOM to update
                 // move focus to the newly created note
-                moveNoteFocus(note.uuid, major_pane);
+                setNoteFocus(note.uuid, major_pane);
             });
             controller.diff.push({note: note, kind: 'C'});
         };
@@ -108,8 +114,15 @@
             }, 5000);
         };
 
-        this.deleteNote = function() {
-            // TODO
+        this.deleteNote = function(note, path, major_pane, index, event) {
+            event.preventDefault();
+            var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
+            var children = note.children;
+            moveNoteFocus(-1);
+            parent.children.splice(index, 1); // remove note from DOM
+            parent.children.splice.apply(parent, [index, 0].concat(children));
+                // insert array into another array at index
+                // http://stackoverflow.com/a/7032717
         };
 
         this.indentNote = function(note, path, major_pane, index, event, indent) {
@@ -155,7 +168,7 @@
             }
 
             $timeout(function(){ // wait for the DOM to update
-                moveNoteFocus(note.uuid, major_pane);
+                setNoteFocus(note.uuid, major_pane);
             });
             var kind = indent ? "I" : "D";
             controller.diff.push({note: note, kind: kind});
