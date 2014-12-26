@@ -1,6 +1,6 @@
 {% verbatim %}
 
-<input id="input-minor-{{note.uuid}}" ng-keydown="notes.keyHandler(note, path, false, $index, $event)" ng-model="note.text"></input>
+<textarea id="input-minor-{{note.uuid}}" ng-keydown="notes.keyHandler(note, path, false, $index, $event)" ng-model="note.text"></textarea>
 <ul ng-init="parentNote = note">
     <li ng-if="parentNote.expanded_in_minor_pane" ng-repeat="note in note.children" ng-init="path = path.concat([$index])" ng-include="'/fragment/note-minor/'"></li>
 </ul>

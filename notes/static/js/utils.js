@@ -23,6 +23,13 @@ function setNoteFocus(note, major_pane) {
     input.focus();
 }
 
+// change a textarea's height to fit its content
+// http://stackoverflow.com/a/995374
+function resizeTextarea(elem) {
+    elem.style.height = "1px";
+    elem.style.height = (elem.scrollHeight)+"px";
+}
+
 // generate a positive integer from zero to the max value of a BigInteger in
 // Django. Suitable for UUID generation.
 function generateUUID() {

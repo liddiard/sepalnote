@@ -42,7 +42,6 @@
                 controller.updateNote(note);
         };
 
-
         this.noteFromPath = function(path) {
             if (typeof path === 'undefined')
                 return;
