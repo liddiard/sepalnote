@@ -6,6 +6,8 @@
 <section ng-controller="NotesController as notes" id="notes">
 
     <aside class="notes">
+        <h1 class="logo">Sepalnote</h1>
+        <input id="search" placeholder="&#xF002; Search"></input>
         <ul>
             <li ng-repeat="note in notes.tree.tree" ng-init="path = [$index]" ng-include="'/fragment/note-minor/'"></li>
         </ul>
