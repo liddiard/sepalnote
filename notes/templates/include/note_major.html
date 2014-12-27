@@ -1,11 +1,11 @@
 {% verbatim %}
 
-<div class="note-container" ng-class="{active: note.hover}">
+<div class="note-container" ng-class="{active: note.hover_major, collapsed: !note.expanded_in_major_pane}">
 
     <div class="note-actions"
          ng-show="note.focus"
-         ng-mouseover="note.hover = true"
-         ng-mouseout="note.hover = false">
+         ng-mouseover="note.hover_major = true"
+         ng-mouseout="note.hover_major = false">
         <i ng-mousedown="notes.expandNote(note, true)"
            ng-if="note.expanded_in_major_pane"
            title="Collapse note"

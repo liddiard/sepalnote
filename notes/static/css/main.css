@@ -56,6 +56,9 @@ main.notes {
     padding-left: 1.5em; }
   main.notes > ul {
     margin-top: 0.5em; }
+  main.notes .note-actions {
+    bottom: 2px;
+    right: 5px; }
 
 aside.notes {
   position: absolute;
@@ -86,6 +89,13 @@ aside.notes {
   aside.notes .logo {
     margin: 0.2em 0 0.15em;
     font-size: 1.7em; }
+  aside.notes .note-actions {
+    bottom: 2px;
+    left: -16px;
+    padding-right: 4px;
+    opacity: 0; }
+    aside.notes .note-actions:hover, aside.notes .note-actions.active {
+      opacity: 1; }
   aside.notes .note-text {
     cursor: pointer;
     padding-right: 0.25em;
@@ -108,6 +118,8 @@ section.front {
 .notes > ul {
   border-left: none;
   padding-left: 0 !important; }
+.notes .collapsed {
+  border-bottom: 1px solid #EBDFCC; }
 .notes .note-text {
   outline: none;
   padding: 0.2em 0; }
@@ -121,9 +133,6 @@ section.front {
 
 .note-actions {
   position: absolute;
-  opacity: 1;
-  bottom: 2px;
-  right: 5px;
   color: rgba(68, 42, 10, 0.25);
   background-color: rgba(255, 254, 251, 0.65);
   cursor: default; }

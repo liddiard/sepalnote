@@ -1,9 +1,26 @@
 {% verbatim %}
 
-<div class="note-text"
-     ng-class="{focused: notes.noteFromPath(notes.tree.focused_note_path).uuid === note.uuid}"
-     ng-click="notes.updateFocus(note)">
-    {{note.text}}
+<div class="note-container"
+     ng-mouseover="note.hover_minor = true"
+     ng-mouseout="note.hover_minor = false">
+    <div class="note-actions" ng-class="{active: note.hover_minor}">
+        <i ng-mousedown="notes.expandNote(note, false)"
+           ng-if="note.expanded_in_minor_pane"
+           title="Collapse note"
+           class="fa fa-minus">
+        </i>
+        <i ng-mousedown="notes.expandNote(note, false)"
+           ng-if="!note.expanded_in_minor_pane"
+           title="Expand note"
+           class="fa fa-plus">
+        </i>
+    </div>
+    <div class="note-text"
+         ng-class="{focused: notes.noteFromPath(notes.tree.focused_note_path).uuid === note.uuid,
+                    collapsed: !note.expanded_in_minor_pane}"
+         ng-click="notes.updateFocus(note)">
+        {{note.text}}
+    </div>
 </div>
 
 <ul ng-init="parentNote = note">

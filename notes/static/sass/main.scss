@@ -85,6 +85,11 @@ main.notes {
     & > ul {
         margin-top: 0.5em;
     }
+
+    .note-actions {
+        bottom: 2px;
+        right: 5px;
+    }
 }
 
 aside.notes {
@@ -124,6 +129,18 @@ aside.notes {
         font-size: 1.7em;
     }
 
+    .note-actions {
+        bottom: 2px;
+        left: -16px;
+        padding-right: 4px; // prevent element from going invisible in "dead zone"
+                            // between .note-text and .note-actions elements
+        opacity: 0;
+
+        &:hover, &.active {
+            opacity: 1;
+        }
+    }
+
     .note-text {
         cursor: pointer;
         padding-right: 0.25em;
@@ -159,6 +176,10 @@ section.front {
         padding-left: 0 !important;
     }
 
+    .collapsed {
+        border-bottom: $edge-trim;
+    }
+
     .note-text {
         outline: none;
         padding: 0.2em 0;
@@ -179,9 +200,6 @@ section.front {
 
 .note-actions {
     position: absolute;
-    opacity: 1;
-    bottom: 2px;
-    right: 5px;
     color: rgba($text-color, 0.25);
     background-color: rgba($background-color, 0.65);
     cursor: default;
