@@ -162,7 +162,7 @@ def expand_collapse(user, note_id, major_pane):
                                             not note.expanded_in_minor_pane
     note.save()
     if expanded:
-        tree = get_note_children({}, major_pane=major_pane, root=note)
+        tree = get_note_children({}, root=note)
         return (note, tree)
     else:
         return (note, None)
@@ -243,3 +243,8 @@ def update_focus(user, note_id):
     profile = UserProfile.objects.get(user=user)
     profile.focused_note = note
     profile.save()
+    if not note.expanded_in_major_pane:
+        children = note.get_note_children({}, note)
+        return (note, children)
+    else:
+        return (note, None)

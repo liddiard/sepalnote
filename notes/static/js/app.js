@@ -176,6 +176,22 @@
             controller.diff.push({note: note, kind: kind});
         };
 
+        this.expandNote = function(note, major_pane){
+            $http({
+                method: 'POST',
+                url: '/api/note/diff/',
+                data: [{note: note, major_pane: major_pane, kind: 'E'}] // /diff needs an array
+            })
+            .success(function(data){
+                if (major_pane)
+                    note.expanded_in_major_pane = !note.expanded_in_major_pane;
+                else
+                    note.expanded_in_minor_pane = !note.expanded_in_minor_pane;
+                if (data.tree)
+                    note.children = data.tree;
+            });
+        };
+
         $http.get('/api/note/tree/').success(function(data){
             controller.tree = data;
         });

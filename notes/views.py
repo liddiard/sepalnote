@@ -95,17 +95,21 @@ class DiffNoteView(AuthenticatedAjaxView):
         diff = json.loads(request.body)
         for change in diff:
             note = change['note']
-            if change['kind'] == 'U':
+            kind = change['kind']
+            if kind == 'U':
                 api.update(request.user, note['uuid'], note['text'])
-            elif change['kind'] == 'C':
+            elif kind == 'C':
                 api.insert(request.user, note['uuid'], note['parent'],
                            note['position'], note['text'])
-            elif change['kind'] == 'I':
+            elif kind == 'I':
                 api.indent(request.user, note['uuid'], True)
-            elif change['kind'] == 'D':
+            elif kind == 'D':
                 api.indent(request.user, note['uuid'], False)
-            elif change['kind'] == 'X':
+            elif kind == 'X':
                 api.delete(request.user, note['uuid'])
+            elif kind == 'E':
+                api.expand_collapse(request.user, note['uuid'],
+                                    change['major_pane'])
             else:
                 print change
         return self.success()
@@ -209,5 +213,5 @@ class UpdateFocusedNoteView(AuthenticatedAjaxView):
         note_id = request.POST.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        note = api.update_focus(request.user, note_id)
-        return self.success(id=note.pk)
+        note, tree = api.update_focus(request.user, note_id)
+        return self.success(id=note.pk, tree=tree)

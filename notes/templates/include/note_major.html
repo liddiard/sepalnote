@@ -6,8 +6,16 @@
          ng-show="note.focus"
          ng-mouseover="note.hover = true"
          ng-mouseout="note.hover = false">
-        <i ng-if="note.expanded_in_major_pane" title="Collapse note" class="fa fa-minus"></i>
-        <i ng-if="!note.expanded_in_major_pane" title="Expand note" class="fa fa-plus"></i>
+        <i ng-mousedown="notes.expandNote(note, true)"
+           ng-if="note.expanded_in_major_pane"
+           title="Collapse note"
+           class="fa fa-minus">
+        </i>
+        <i ng-mousedown="notes.expandNote(note, true)"
+           ng-if="!note.expanded_in_major_pane"
+           title="Expand note"
+           class="fa fa-plus">
+        </i>
         <i title="Display at top" class="fa fa-caret-square-o-up"></i>
         <i title="Share note" class="fa fa-share-alt"></i>
     </div>
