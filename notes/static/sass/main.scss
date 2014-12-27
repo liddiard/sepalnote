@@ -128,30 +128,28 @@ section.front {
     margin: 1em auto;
 }
 
-.note {
-    .note-container {
-        position: relative;
+.note-container {
+    position: relative;
 
-        &.active {
-            background-color: rgba($select-color, 0.05);
-        }
+    &.active {
+        background-color: rgba($select-color, 0.05);
     }
+}
 
-    .note-actions {
-        position: absolute;
-        opacity: 1;
-        bottom: 2px;
-        right: 5px;
-        color: rgba($text-color, 0.25);
-        background-color: rgba($background-color, 0.65);
-        cursor: default;
+.note-actions {
+    position: absolute;
+    opacity: 1;
+    bottom: 2px;
+    right: 5px;
+    color: rgba($text-color, 0.25);
+    background-color: rgba($background-color, 0.65);
+    cursor: default;
 
-        i {
-            cursor: pointer;
+    i {
+        cursor: pointer;
 
-            &:hover {
-                color: rgba($text-color, 0.75);
-            }
+        &:hover {
+            color: rgba($text-color, 0.75);
         }
     }
 }
