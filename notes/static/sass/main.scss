@@ -1,17 +1,18 @@
 $helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$background-color: #fffefb;
-$font-color: #442A0A;
 $primary-color: #6700A0;
-$sidebar-width: 260px;
+$background-color: #fffefb;
+$text-color: #442A0A;
+$select-color: #FF9E25;
+$sidebar-width: 280px;
 $edge-trim: 1px solid #EBDFCC;
 
 ::-webkit-input-placeholder {
-    color: rgba($font-color, 0.25);
+    color: rgba($text-color, 0.25);
 }
 
 body {
     font-family: $helvetica;
-    color: $font-color;
+    color: $text-color;
     background-color: $background-color;
     margin: 0;
     border: 0;
@@ -43,7 +44,7 @@ ul#menu {
     position: absolute;
     top: 0; right: 0;
     font-size: 0.7em;
-    margin: 0.5em;
+    margin: 0.75em;
     padding: 0;
     z-index: 10;
 
@@ -53,10 +54,10 @@ ul#menu {
 
         a {
             text-decoration: none;
-            color: rgba($font-color, 0.6);
+            color: rgba($text-color, 0.6);
 
             &:hover {
-                color: rgba($font-color, 0.8);
+                color: rgba($text-color, 0.8);
             }
         }
     }
@@ -69,12 +70,16 @@ main.notes {
     left: $sidebar-width;
     right: 0;
     box-sizing: border-box;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
 
     h1 {
         font-weight: normal;
         margin-bottom: 0;
         outline: none;
+    }
+
+    ul {
+        padding-left: 1.5em;
     }
 }
 
@@ -121,6 +126,34 @@ section.front {
     box-sizing: border-box;
     padding: 1em;
     margin: 1em auto;
+}
+
+.note {
+    .note-container {
+        position: relative;
+
+        &.active {
+            background-color: rgba($select-color, 0.05);
+        }
+    }
+
+    .note-actions {
+        position: absolute;
+        opacity: 1;
+        bottom: 2px;
+        right: 5px;
+        color: rgba($text-color, 0.25);
+        background-color: rgba($background-color, 0.65);
+        cursor: default;
+
+        i {
+            cursor: pointer;
+
+            &:hover {
+                color: rgba($text-color, 0.75);
+            }
+        }
+    }
 }
 
 .logo {
@@ -177,6 +210,6 @@ section.front {
 
     & > ul {
         border-left: none;
-        padding-left: 0;
+        padding-left: 0 !important;
     }
 }

@@ -9,14 +9,22 @@
         <h1 class="logo">Sepalnote</h1>
         <input id="search" placeholder="&#xF002; Search"></input>
         <ul>
-            <li ng-repeat="note in notes.tree.tree" ng-init="path = [$index]" ng-include="'/fragment/note-minor/'"></li>
+            <li ng-repeat="note in notes.tree.tree"
+                ng-init="path = [$index]"
+                ng-include="'/fragment/note-minor/'"
+                class="note">
+            </li>
         </ul>
     </aside>
 
     <main class="notes">
         <h1 contenteditable ng-model="notes.noteFromPath(notes.tree.focused_note_path).text"></h1>
         <ul>
-            <li ng-repeat="note in notes.noteFromPath(notes.tree.focused_note_path).children" ng-init="path = notes.tree.focused_note_path.concat($index)" ng-include="'/fragment/note-major/'"></li>
+            <li ng-repeat="note in notes.noteFromPath(notes.tree.focused_note_path).children"
+                ng-init="path = notes.tree.focused_note_path.concat($index)"
+                ng-include="'/fragment/note-major/'"
+                class="note">
+            </li>
         <ul>
     </main>
 

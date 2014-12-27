@@ -11,7 +11,8 @@
     <li ng-if="parentNote.expanded_in_minor_pane"
         ng-repeat="note in note.children"
         ng-init="path = path.concat([$index])"
-        ng-include="'/fragment/note-minor/'">
+        ng-include="'/fragment/note-minor/'"
+        class="note">
     </li>
 </ul>
 

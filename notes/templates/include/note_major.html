@@ -1,17 +1,34 @@
 {% verbatim %}
 
-<div contenteditable
-     class="note-text"
-     id="input-major-{{note.uuid}}"
-     ng-keydown="notes.keyHandler(note, path, true, $index, $event)"
-     ng-model="note.text">
+<div class="note-container" ng-class="{active: note.hover}">
+
+    <div class="note-actions"
+         ng-show="note.focus"
+         ng-mouseover="note.hover = true"
+         ng-mouseout="note.hover = false">
+        <i ng-if="note.expanded_in_major_pane" title="Collapse note" class="fa fa-minus"></i>
+        <i ng-if="!note.expanded_in_major_pane" title="Expand note" class="fa fa-plus"></i>
+        <i title="Display at top" class="fa fa-caret-square-o-up"></i>
+        <i title="Share note" class="fa fa-share-alt"></i>
+    </div>
+
+    <div contenteditable
+         class="note-text"
+         id="input-major-{{note.uuid}}"
+         ng-keydown="notes.keyHandler(note, path, true, $index, $event)"
+         ng-focus="note.focus = true"
+         ng-blur="note.focus = false"
+         ng-model="note.text"> <!--- apply ng-class here -->
+    </div>
+
 </div>
 
 <ul ng-init="parentNote = note">
     <li ng-if="parentNote.expanded_in_major_pane"
         ng-repeat="note in note.children"
         ng-init="path = path.concat([$index])"
-        ng-include="'/fragment/note-major/'">
+        ng-include="'/fragment/note-major/'"
+        class="note">
     </li>
 </ul>
 
