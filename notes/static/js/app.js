@@ -181,7 +181,6 @@
         });
 
         window.setInterval(controller.applyDiff, 5000);
-        window.setTimeout(function(){ console.log(controller.tree.tree) }, 5000 );
     });
 
 })(window.angular);
