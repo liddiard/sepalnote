@@ -243,8 +243,9 @@ def update_focus(user, note_id):
     profile = UserProfile.objects.get(user=user)
     profile.focused_note = note
     profile.save()
+    focused_note_path = get_note_path(note)
     if not note.expanded_in_major_pane:
-        children = note.get_note_children({}, note)
-        return (note, children)
+        children = get_note_children({}, note)
+        return (focused_note_path, children)
     else:
-        return (note, None)
+        return (focused_note_path, None)

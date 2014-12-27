@@ -16,7 +16,10 @@
            title="Expand note"
            class="fa fa-plus">
         </i>
-        <i title="Display at top" class="fa fa-caret-square-o-up"></i>
+        <i ng-mousedown="notes.updateFocus(note)"
+           title="Display at top"
+           class="fa fa-caret-square-o-up">
+        </i>
         <i title="Share note" class="fa fa-share-alt"></i>
     </div>
 

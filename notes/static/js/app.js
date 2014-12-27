@@ -177,18 +177,29 @@
         };
 
         this.expandNote = function(note, major_pane){
-            $http({
-                method: 'POST',
-                url: '/api/note/diff/',
-                data: [{note: note, major_pane: major_pane, kind: 'E'}] // /diff needs an array
-            })
+            $http.post(
+                '/api/note/expand/',
+                {id: note.uuid, major_pane: major_pane}
+            )
             .success(function(data){
                 if (major_pane)
                     note.expanded_in_major_pane = !note.expanded_in_major_pane;
                 else
                     note.expanded_in_minor_pane = !note.expanded_in_minor_pane;
                 if (data.tree)
-                    note.children = data.tree;
+                    note.children = data.tree.children;
+            });
+        };
+
+        this.updateFocus = function(note) {
+            $http.post(
+                '/api/userprofile/update-focused-note/',
+                {id: note.uuid}
+            )
+            .success(function(data){
+                if (!note.expanded_in_major_pane)
+                    note.children = data.tree.children;
+                controller.tree.focused_note_path = data.focused_note_path;
             });
         };
 

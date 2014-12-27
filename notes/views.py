@@ -102,14 +102,16 @@ class DiffNoteView(AuthenticatedAjaxView):
                 api.insert(request.user, note['uuid'], note['parent'],
                            note['position'], note['text'])
             elif kind == 'I':
-                api.indent(request.user, note['uuid'], True)
+                api.indent(request.user, note['uuid'], indent=True)
             elif kind == 'D':
-                api.indent(request.user, note['uuid'], False)
+                api.indent(request.user, note['uuid'], indent=False)
             elif kind == 'X':
                 api.delete(request.user, note['uuid'])
             elif kind == 'E':
                 api.expand_collapse(request.user, note['uuid'],
                                     change['major_pane'])
+            elif kind == 'F':
+                api.update_focus(request.user, note['uuid'])
             else:
                 print change
         return self.success()
@@ -118,15 +120,16 @@ class DiffNoteView(AuthenticatedAjaxView):
 class AddNoteView(AuthenticatedAjaxView):
 
     def post(self, request):
-        parent_id = request.POST.get('parent')
+        data = json.loads(request.body)
+        parent_id = data.get('parent')
         if parent_id is None:
             return self.key_error('Required key (parent) missing from '
                                   'request.')
-        position = request.POST.get('position')
+        position = data.get('position')
         if position is None:
             return self.key_error('Required key (position) missing from '
                                   'request.')
-        text = request.POST.get('text')
+        text = data.get('text')
         if text is None:
             return self.key_error('Required key (text) missing from request.')
         try:
@@ -141,10 +144,11 @@ class AddNoteView(AuthenticatedAjaxView):
 class UpdateNoteView(AuthenticatedAjaxView):
 
     def post(self, request):
-        note_id = request.POST.get('id')
+        data = json.loads(request.body)
+        note_id = data.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        text = request.POST.get('text')
+        text = data.get('text')
         if text is None:
             return self.key_error('Required key (text) missing from request.')
         note = api.update(request.user, note_id, text)
@@ -154,7 +158,8 @@ class UpdateNoteView(AuthenticatedAjaxView):
 class DeleteNoteView(AuthenticatedAjaxView):
 
     def post(self, request):
-        note_id = request.POST.get('id')
+        data = json.loads(request.body)
+        note_id = data.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
         dedent = api.delete(request.user, note_id)
@@ -164,14 +169,14 @@ class DeleteNoteView(AuthenticatedAjaxView):
 class ExpandCollapseNoteView(AuthenticatedAjaxView):
 
     def post(self, request):
-        note_id = request.POST.get('id')
+        data = json.loads(request.body)
+        note_id = data.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        major_pane = request.POST.get('major_pane')
+        major_pane = data.get('major_pane')
         if major_pane is None:
             return self.key_error('Required key (major_pane) missing from '
                                   'request.')
-        major_pane = json.loads(major_pane)
         note, tree = api.expand_collapse(request.user, note_id, major_pane)
         return self.success(id=note.pk, major_pane=major_pane,
                             tree=tree)
@@ -180,14 +185,14 @@ class ExpandCollapseNoteView(AuthenticatedAjaxView):
 class IndentNoteView(AuthenticatedAjaxView):
 
     def post(self, request):
-        note_id = request.POST.get('id')
+        data = json.loads(request.body)
+        note_id = data.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        indent = request.POST.get('indent')
+        indent = data.get('indent')
         if indent is None:
             return self.key_error('Required key (indent) missing from '
                                   'request.')
-        indent = json.loads(indent)
         note = api.indent(request.user, note_id, indent)
         return self.success(id=note.pk, indent=indent)
 
@@ -195,14 +200,14 @@ class IndentNoteView(AuthenticatedAjaxView):
 class ChangeNotePermissionsView(AuthenticatedAjaxView):
 
     def post(self, request):
-        note_id = request.POST.get('id')
+        data = json.loads(request.body)
+        note_id = data.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        public = request.POST.get('public')
+        public = data.get('public')
         if public is None:
             return self.key_error('Required key (public) missing from '
                                   'request.')
-        public = json.loads(public)
         note = api.change_permissions(request.user, note_id, public)
         return self.success(id=note.pk)
 
@@ -210,8 +215,9 @@ class ChangeNotePermissionsView(AuthenticatedAjaxView):
 class UpdateFocusedNoteView(AuthenticatedAjaxView):
 
     def post(self, request):
-        note_id = request.POST.get('id')
+        data = json.loads(request.body)
+        note_id = data.get('id')
         if note_id is None:
             return self.key_error('Required key (id) missing from request.')
-        note, tree = api.update_focus(request.user, note_id)
-        return self.success(id=note.pk, tree=tree)
+        focused_note_path, tree = api.update_focus(request.user, note_id)
+        return self.success(focused_note_path=focused_note_path, tree=tree)
