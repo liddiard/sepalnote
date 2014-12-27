@@ -81,6 +81,10 @@ main.notes {
     ul {
         padding-left: 1.5em;
     }
+
+    & > ul {
+        margin-top: 0.5em;
+    }
 }
 
 aside.notes {
@@ -119,6 +123,21 @@ aside.notes {
         margin: 0.2em 0 0.15em;
         font-size: 1.7em;
     }
+
+    .note-text {
+        cursor: pointer;
+        padding-right: 0.25em;
+        display: inline-block; // forces containment of text in sidebar with overflow: scroll
+                               // http://stackoverflow.com/a/3917059
+
+        &:hover {
+            background-color: rgba($select-color, 0.1);
+        }
+
+        &.focused {
+            background-color: rgba($select-color, 0.2);
+        }
+    }
 }
 
 section.front {
@@ -128,11 +147,33 @@ section.front {
     margin: 1em auto;
 }
 
+.notes {
+    ul {
+        padding-left: 1em;
+        border-left: 1px solid #BFFFA6;
+        list-style-type: none;
+    }
+
+    & > ul {
+        border-left: none;
+        padding-left: 0 !important;
+    }
+
+    .note-text {
+        outline: none;
+        padding: 0.2em 0;
+    }
+}
+
 .note-container {
     position: relative;
 
     &.active {
         background-color: rgba($select-color, 0.05);
+    }
+
+    &.selected {
+        background-color: rgba(210,220,255, 0.75);
     }
 }
 
@@ -185,29 +226,4 @@ section.front {
     width: 50%;
     padding: 0 1.5em;
     box-sizing: border-box;
-}
-
-.notes {
-    ul {
-        padding-left: 1em;
-        border-left: 1px solid #BFFFA6;
-        list-style-type: none;
-
-        li {
-            .note-text {
-                outline: none;
-                width: 100%;
-                padding: 0.15em 0;
-            }
-
-            &.selected {
-                background-color: rgba(210,220,255, 0.75);
-            }
-        }
-    }
-
-    & > ul {
-        border-left: none;
-        padding-left: 0 !important;
-    }
 }

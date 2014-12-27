@@ -41,7 +41,6 @@ function generateUUID() {
     }
 }
 
-
 // Returns the caret (cursor) position of the specified text field.
 // Return value range is 0 – elem.value.length.
 // http://stackoverflow.com/a/3976125

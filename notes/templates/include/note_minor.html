@@ -1,10 +1,9 @@
 {% verbatim %}
 
-<div contenteditable
-     class="note-text"
-     id="input-minor-{{note.uuid}}"
-     ng-keydown="notes.keyHandler(note, path, false, $index, $event)"
-     ng-model="note.text">
+<div class="note-text"
+     ng-class="{focused: notes.noteFromPath(notes.tree.focused_note_path).uuid === note.uuid}"
+     ng-click="notes.updateFocus(note)">
+    {{note.text}}
 </div>
 
 <ul ng-init="parentNote = note">
