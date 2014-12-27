@@ -1,8 +1,18 @@
 {% verbatim %}
 
-<textarea id="input-major-{{note.uuid}}" ng-keydown="notes.keyHandler(note, path, true, $index, $event)" ng-model="note.text" onkeyup="resizeTextarea(this)"></textarea>
+<div contenteditable
+     class="note-text"
+     id="input-major-{{note.uuid}}"
+     ng-keydown="notes.keyHandler(note, path, true, $index, $event)"
+     ng-model="note.text">
+</div>
+
 <ul ng-init="parentNote = note">
-    <li ng-if="parentNote.expanded_in_major_pane" ng-repeat="note in note.children" ng-init="path = path.concat([$index])" ng-include="'/fragment/note-major/'"></li>
+    <li ng-if="parentNote.expanded_in_major_pane"
+        ng-repeat="note in note.children"
+        ng-init="path = path.concat([$index])"
+        ng-include="'/fragment/note-major/'">
+    </li>
 </ul>
 
 {% endverbatim %}

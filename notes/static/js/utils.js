@@ -11,7 +11,7 @@ function getIndex(elements, element) {
 
 // move focus from current note to x # of elements forward where x is 'delta'
 function moveNoteFocus(delta) {
-    var inputs = document.getElementById('notes').getElementsByTagName('textarea');
+    var inputs = document.getElementById('notes').getElementsByClassName('note-text');
     angular.element(inputs).eq( getIndex(inputs, document.activeElement)+delta )[0].focus();
 }
 
@@ -21,13 +21,6 @@ function setNoteFocus(note, major_pane) {
     var id = ['input', pane, note].join('-');
     var input = document.getElementById(id);
     input.focus();
-}
-
-// change a textarea's height to fit its content
-// http://stackoverflow.com/a/995374
-function resizeTextarea(elem) {
-    elem.style.height = "1px";
-    elem.style.height = (elem.scrollHeight)+"px";
 }
 
 // generate a positive integer from zero to the max value of a BigInteger in
@@ -51,32 +44,28 @@ function generateUUID() {
 
 // Returns the caret (cursor) position of the specified text field.
 // Return value range is 0 – elem.value.length.
-// http://stackoverflow.com/a/2897229
-function getCaretPosition (elem) {
-
-    // Initialize
-    var iCaretPos = 0;
-
-    // IE Support
-    if (document.selection) {
-
-        // Set focus on the element
-        elem.focus();
-
-        // To get cursor position, get empty selection range
-        var oSel = document.selection.createRange();
-
-        // Move selection start to 0 position
-        oSel.moveStart ('character', -elem.value.length);
-
-        // The caret position is selection length
-        iCaretPos = oSel.text.length;
+// http://stackoverflow.com/a/3976125
+function getCaretPosition(editableDiv) {
+    var caretPos = 0,
+    sel, range;
+    if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            if (range.commonAncestorContainer.parentNode == editableDiv) {
+                caretPos = range.endOffset;
+            }
+        }
+    } else if (document.selection && document.selection.createRange) {
+        range = document.selection.createRange();
+        if (range.parentElement() == editableDiv) {
+            var tempEl = document.createElement("span");
+            editableDiv.insertBefore(tempEl, editableDiv.firstChild);
+            var tempRange = range.duplicate();
+            tempRange.moveToElementText(tempEl);
+            tempRange.setEndPoint("EndToEnd", range);
+            caretPos = tempRange.text.length;
+        }
     }
-
-    // Firefox support
-    else if (elem.selectionStart || elem.selectionStart == '0')
-        iCaretPos = elem.selectionStart;
-
-    // Return results
-    return (iCaretPos);
+    return caretPos;
 }

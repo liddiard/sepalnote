@@ -44,18 +44,19 @@ main.notes {
   position: absolute;
   height: 100%;
   overflow-y: auto;
-  left: 300px;
+  left: 260px;
   right: 0;
   box-sizing: border-box;
   padding: 0 1rem; }
   main.notes h1 {
     font-weight: normal;
-    margin-bottom: 0; }
+    margin-bottom: 0;
+    outline: none; }
 
 aside.notes {
   position: absolute;
   height: 100%;
-  width: 300px;
+  width: 260px;
   overflow-x: auto;
   border-right: 1px solid #EBDFCC;
   background-color: #fffef4;
@@ -119,15 +120,10 @@ section.front {
   padding-left: 1em;
   border-left: 1px solid #BFFFA6;
   list-style-type: none; }
-  .notes ul li textarea {
-    display: block;
-    font-size: 1em;
-    border: 0;
-    background-color: transparent;
-    resize: none;
+  .notes ul li .note-text {
     outline: none;
     width: 100%;
-    color: #442A0A; }
+    padding: 0.15em 0; }
   .notes ul li.selected {
     background-color: rgba(210, 220, 255, 0.75); }
 .notes > ul {

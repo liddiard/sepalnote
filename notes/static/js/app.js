@@ -1,5 +1,6 @@
-(function(){
-    var app = angular.module('notes', []);
+(function(angular){
+
+    var app = angular.module('notes', ['contenteditable']);
 
     app.config(function($httpProvider){
         // Django CSRF token support
@@ -175,20 +176,12 @@
             controller.diff.push({note: note, kind: kind});
         };
 
-
         $http.get('/api/note/tree/').success(function(data){
             controller.tree = data;
-
-            $timeout(function(){ // wait for the DOM to update
-                var textareas = document.getElementsByTagName('textarea');
-                console.log(textareas, textareas.length);
-                for (var i = 0; i < textareas.length; i++) {
-                    resizeTextarea(textareas[i]);
-                }
-            }, 500);
         });
 
         window.setInterval(controller.applyDiff, 5000);
+        window.setTimeout(function(){ console.log(controller.tree.tree) }, 5000 );
     });
 
-})();
+})(window.angular);
