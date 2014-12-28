@@ -40,6 +40,9 @@
                      event.ctrlKey && event.keyCode === 40) // command + down arrow or ctrl + down arrow
                 controller.updateFocus(note);
 
+            else if (event.ctrlKey && event.keyCode === 32) // ctrl + space
+                controller.expandNote(note, major_pane);
+
             else if (event.keyCode === 38) // up arrow
                 moveNoteFocus(-1);
 
