@@ -81,10 +81,10 @@ def insert(user, note, parent_id, position, text=''):
                                    position__gte=position)\
                                   .order_by('-position')
     with transaction.atomic():
-        for note in following_sibling_notes:
+        for sibling_note in following_sibling_notes:
             # shift subsequent notes down to make room for the new one
-            note.position += 1
-            note.save()
+            sibling_note.position += 1
+            sibling_note.save()
         if isinstance(note, Note):
             new_note = note
             new_note.parent = parent_note

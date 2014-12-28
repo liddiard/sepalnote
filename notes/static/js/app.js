@@ -18,7 +18,7 @@
             var caretPosition = getCaretPosition(document.activeElement);
 
             if (event.keyCode === 13) // enter
-                controller.addNote(index, path, major_pane, event);
+                controller.addNote(note, path, major_pane, index, event);
 
             else if (event.shiftKey && event.keyCode === 9) // shift + tab
                 controller.indentNote(note, path, major_pane, index, event, false);
@@ -87,24 +87,30 @@
         };
 
 
-        this.addNote = function(insertAfter, path, major_pane, event) {
+        this.addNote = function(note, path, major_pane, index, event) {
             event.preventDefault();
             var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
-            var note = {
+            var new_note = {
                 uuid: generateUUID(),
-                parent: parent.uuid,
-                position: insertAfter+1,
-                text: '',
+                expanded_in_major_pane: true,
+                expanded_in_minor_pane: false,
+                text: ''
             }
-            if (parent.children[insertAfter].children)
-                parent.children[insertAfter].children.splice(0, 0, note);
-            else
-                parent.children.splice(insertAfter+1, 0, note);
+            if (note.children) {
+                new_note.parent = note.uuid;
+                new_note.position = 0;
+                note.children.splice(0, 0, new_note);
+            }
+            else {
+                new_note.parent = parent.uuid;
+                new_note.position = index + 1,
+                parent.children.splice(index+1, 0, new_note);
+            }
             $timeout(function(){ // wait for the DOM to update
                 // move focus to the newly created note
-                setNoteFocus(note.uuid, major_pane);
+                setNoteFocus(new_note.uuid, major_pane);
             });
-            controller.diff.push({note: note, kind: 'C'});
+            controller.diff.push({note: new_note, kind: 'C'});
         };
 
         this.updateNote = function(note) {
