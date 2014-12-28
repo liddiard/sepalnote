@@ -9,11 +9,14 @@
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     });
 
-    app.controller('NotesController', function($http, $scope, $timeout) {
+    app.controller('NotesController', function($http, $scope, $timeout, $document) {
         var controller = this;
         this.tree = [];
         this.diff = []; // holds diff not yet sent to backend
+        this.noteTimeouts = {} // stores timeout ids associated with each note
+                               // whose text has not yet been updated
 
+        // for key events bound to a specific note
         this.keyHandler = function(note, path, major_pane, index, event) {
             var caretPosition = getCaretPosition(document.activeElement);
 
@@ -33,6 +36,10 @@
                     controller.deleteNote(note, path, major_pane, index, event);
             }
 
+            else if (event.metaKey && event.keyCode === 40 ||
+                     event.ctrlKey && event.keyCode === 40) // command + down arrow or ctrl + down arrow
+                controller.updateFocus(note);
+
             else if (event.keyCode === 38) // up arrow
                 moveNoteFocus(-1);
 
@@ -42,6 +49,15 @@
             else
                 controller.updateNote(note);
         };
+
+        // for key events NOT bound to a specific note (works anywhere on page)
+        $document.bind('keydown', function(event){
+            if (event.metaKey && event.keyCode === 38 ||
+                event.ctrlKey && event.keyCode === 38) { // command + up arrow or ctrl + up arrow
+                var parent = controller.noteFromPath(controller.tree.focused_note_path.slice(0, -1))
+                controller.updateFocus(parent);
+            }
+        });
 
         this.noteFromPath = function(path) {
             if (typeof path === 'undefined')
@@ -114,10 +130,11 @@
         };
 
         this.updateNote = function(note) {
-            if (this.timeoutId)
-                window.clearTimeout(this.timeoutId);
-            this.timeoutId = window.setTimeout(function(){
+            if (controller.noteTimeouts[note.uuid])
+                window.clearTimeout(controller.noteTimeouts[note.uuid]);
+            controller.noteTimeouts[note.uuid] = window.setTimeout(function(){
                 controller.diff.push({note: note, kind: 'U'});
+                delete controller.noteTimeouts[note.uuid];
             }, 5000);
         };
 
@@ -203,7 +220,7 @@
                 {id: note.uuid}
             )
             .success(function(data){
-                if (!note.expanded_in_major_pane)
+                if (data.tree)
                     note.children = data.tree.children;
                 controller.tree.focused_note_path = data.focused_note_path;
             });
