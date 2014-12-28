@@ -1,6 +1,9 @@
 {% verbatim %}
 
-<div class="note-container" ng-class="{active: note.hover_major, collapsed: !note.expanded_in_major_pane}">
+<div class="note-container"
+     ng-class="{active: note.hover_major, collapsed: !note.expanded_in_major_pane}"
+     ng-mouseover="note.focus = true"
+     ng-mouseleave="note.focus = false">
 
     <div class="note-actions"
          ng-show="note.focus"
@@ -27,8 +30,6 @@
          class="note-text"
          id="input-major-{{note.uuid}}"
          ng-keydown="notes.keyHandler(note, path, true, $index, $event)"
-         ng-focus="note.focus = true"
-         ng-blur="note.focus = false"
          ng-model="note.text">
     </div>
 

@@ -90,6 +90,11 @@ main.notes {
         bottom: 2px;
         right: 5px;
     }
+
+    .add-note-clickable-area {
+        height: 300px;
+        cursor: text;
+    }
 }
 
 aside.notes {

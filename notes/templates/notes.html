@@ -4,7 +4,7 @@
 {% verbatim %}
 
 <section ng-controller="NotesController as notes" id="notes">
-    
+
     <aside class="notes">
         <h1 class="logo">Sepalnote</h1>
         <input id="search" placeholder="&#xF002; Search"></input>
@@ -20,7 +20,9 @@
     <main class="notes">
         <div class="note-container"
              ng-class="{active: note.hover}"
-             ng-repeat="note in [notes.noteFromPath(notes.tree.focused_note_path)]">
+             ng-repeat="note in [notes.noteFromPath(notes.tree.focused_note_path)]"
+             ng-mouseover="note.focus = true"
+             ng-mouseleave="note.focus = false">
             <div class="note-actions"
                  ng-show="note.focus"
                  ng-mouseover="note.hover = true"
@@ -31,17 +33,19 @@
                 class="note-text"
                 id="input-major-{{note.uuid}}"
                 ng-keydown="notes.keyHandler(note, path, true, $index, $event)"
-                ng-focus="note.focus = true"
-                ng-blur="note.focus = false"
                 ng-model="note.text">
             </h1>
         </div>
 
-        <ul>
-            <li ng-repeat="note in notes.noteFromPath(notes.tree.focused_note_path).children"
+        <ul ng-repeat="focusedNote in [notes.noteFromPath(notes.tree.focused_note_path)]">
+            <li ng-repeat="note in focusedNote.children"
                 ng-init="path = notes.tree.focused_note_path.concat($index)"
                 ng-include="'/fragment/note-major/'"
                 class="note">
+            </li>
+            <li ng-if="!focusedNote.children || !focusedNote.children.length"
+                ng-click="notes.addFirstChild(focusedNote)"
+                class="add-note-clickable-area">
             </li>
         <ul>
     </main>

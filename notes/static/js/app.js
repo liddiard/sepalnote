@@ -102,6 +102,16 @@
             controller.diff = [];
         };
 
+        this.insertNote = function(note, parent, position, major_pane) {
+            if (!parent.children)
+                parent.children = [];
+            parent.children.splice(position, 0, note);
+            $timeout(function(){ // wait for the DOM to update
+                // move focus to the newly created note
+                setNoteFocus(note.uuid, major_pane);
+            });
+            controller.diff.push({note: note, kind: 'C'});
+        };
 
         this.addNote = function(note, path, major_pane, index, event) {
             event.preventDefault();
@@ -111,22 +121,29 @@
                 expanded_in_major_pane: true,
                 expanded_in_minor_pane: false,
                 text: ''
-            }
+            };
             if (note.children) {
                 new_note.parent = note.uuid;
                 new_note.position = 0;
-                note.children.splice(0, 0, new_note);
+                controller.insertNote(new_note, note, 0, true);
             }
             else {
                 new_note.parent = parent.uuid;
                 new_note.position = index + 1,
-                parent.children.splice(index+1, 0, new_note);
+                controller.insertNote(new_note, parent, index+1, true);
             }
-            $timeout(function(){ // wait for the DOM to update
-                // move focus to the newly created note
-                setNoteFocus(new_note.uuid, major_pane);
-            });
-            controller.diff.push({note: new_note, kind: 'C'});
+        };
+
+        this.addFirstChild = function(note) {
+            var new_note = {
+                uuid: generateUUID(),
+                expanded_in_major_pane: true,
+                expanded_in_minor_pane: false,
+                text: '',
+                parent: note.uuid,
+                position: 0
+            };
+            controller.insertNote(new_note, note, 0, true);
         };
 
         this.updateNote = function(note) {

@@ -59,6 +59,9 @@ main.notes {
   main.notes .note-actions {
     bottom: 2px;
     right: 5px; }
+  main.notes .add-note-clickable-area {
+    height: 300px;
+    cursor: text; }
 
 aside.notes {
   position: absolute;
