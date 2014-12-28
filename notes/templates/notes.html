@@ -29,7 +29,8 @@
                  ng-mouseout="note.hover = false">
                 <i title="Share note" class="fa fa-share-alt"></i>
             </div>
-            <h1 contenteditable
+            <h1 contenteditable="true"
+                spellcheck="true"
                 class="note-text"
                 id="input-major-{{note.uuid}}"
                 ng-keydown="notes.keyHandler(note, path, true, $index, $event)"

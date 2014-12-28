@@ -26,7 +26,8 @@
         <i title="Share note" class="fa fa-share-alt"></i>
     </div>
 
-    <div contenteditable
+    <div contenteditable="true"
+         spellcheck="true"
          class="note-text"
          id="input-major-{{note.uuid}}"
          ng-keydown="notes.keyHandler(note, path, true, $index, $event)"
