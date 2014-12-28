@@ -30,9 +30,9 @@
                 controller.indentNote(note, path, major_pane, index, event, true);
 
             else if (event.keyCode === 8 && !caretPosition) { // backspace (cursor at the beginning of input field)
-                if (document.activeElement.value) // input field is NOT empty
+                if (document.activeElement.textContent.length) // note is NOT empty
                     controller.indentNote(note, path, major_pane, index, event, false);
-                else // input field is empty
+                else // note field is empty
                     controller.deleteNote(note, path, major_pane, index, event);
             }
 
