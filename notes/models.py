@@ -40,21 +40,9 @@ class Note(models.Model):
         else:
             return 0
 
-    def next_note_number(self):
-        '''
-        Returns the next sequential note number for this user. Note numbers are
-        guaranteed to be sequential but NOT guaranteed to be contiguous.
-        '''
-        last_note = Note.objects.filter(user=self.user).order_by('number')\
-                                                       .last()
-        if last_note:
-            return last_note.number + 1
-        else:
-            return 0
-
     def save(self, *args, **kwargs):
         if self.pk is None:
-            self.number = self.next_note_number()
+            self.number = self.user.next_note_number()
             if not kwargs.get('uuid'):
                 self.uuid = random.randint(0, MAX_BIG_INT)
         super(Note, self).save(*args, **kwargs)
@@ -70,6 +58,18 @@ class UserProfile(models.Model):
 
     def root_notes(self):
         return Note.objects.filter(user=self.user, parent=None)
+
+    def next_note_number(self):
+        '''
+        Returns the next sequential note number for this user. Note numbers are
+        guaranteed to be sequential but NOT guaranteed to be contiguous.
+        '''
+        last_note = Note.objects.filter(user=self.user).order_by('number')\
+                                                       .last()
+        if last_note:
+            return last_note.number + 1
+        else:
+            return 0
 
     def __unicode__(self):
         return self.user.username
