@@ -29,16 +29,22 @@
                  ng-mouseout="note.hover = false">
                 <i title="Share note" class="fa fa-share-alt"></i>
             </div>
-            <h1 contenteditable="true"
+            <h1 ng-if="notes.tree.focused_note_path.length"
+                contenteditable="true"
                 spellcheck="true"
                 class="note-text"
                 id="input-major-{{note.uuid}}"
                 ng-keydown="notes.keyHandler(note, path, true, $index, $event)"
                 ng-model="note.text">
             </h1>
+            <h1 ng-if="!notes.tree.focused_note_path.length"
+                class="note-root">
+                Notebook
+            </h1>
         </div>
 
-        <ul ng-repeat="focusedNote in [notes.noteFromPath(notes.tree.focused_note_path)]">
+        <ul ng-if="notes.tree.focused_note_path.length"
+            ng-repeat="focusedNote in [notes.noteFromPath(notes.tree.focused_note_path)]">
             <li ng-repeat="note in focusedNote.children"
                 ng-init="path = notes.tree.focused_note_path.concat($index)"
                 ng-include="'/fragment/note-major/'"
@@ -48,7 +54,20 @@
                 ng-click="notes.addFirstChild(focusedNote)"
                 class="add-note-clickable-area">
             </li>
-        <ul>
+        </ul>
+
+        <ul ng-if="!notes.tree.focused_note_path.length">
+            <li ng-repeat="note in notes.tree.tree"
+                ng-init="path = notes.tree.focused_note_path.concat($index)"
+                ng-include="'/fragment/note-major/'"
+                class="note">
+            </li>
+            <li ng-if="!notes.tree.tree.length"
+                ng-click="notes.addFirstChild(notes.tree.tree)"
+                class="add-note-clickable-area">
+            </li>
+        </ul>
+
     </main>
 
 </section>

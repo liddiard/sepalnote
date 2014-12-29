@@ -52,6 +52,9 @@ main.notes {
     font-weight: normal;
     margin-bottom: 0;
     outline: none; }
+    main.notes h1.note-root {
+      color: rgba(68, 42, 10, 0.6);
+      cursor: default; }
   main.notes ul {
     padding-left: 1.5em; }
   main.notes > ul {
