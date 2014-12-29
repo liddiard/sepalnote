@@ -28,17 +28,17 @@ def get_note_children(response, root):
                                 child.parent.expanded_in_minor_pane]
     return response # base case
 
-def get_note_path(note):
+def get_note_path(note, field='position'):
     '''
     Get the path of a note relative to the root of the tree. Returns a list of
-    indices.
+    note 'field's.
     '''
     path = []
     if note is None:
         return path
-    path.append(note.position)
+    path.append(getattr(note, field))
     while note.parent is not None:
-        path[:0] = [note.parent.position] # prepend to list
+        path[:0] = [getattr(note.parent, field)] # prepend to list
         note = note.parent
     return path
 
@@ -68,7 +68,7 @@ def search(user, query):
     results_queryset = Note.objects.filter(user=user, text__icontains=query)
     results_list = [model_to_dict(result) for result in results_queryset]
     for pos, result in enumerate(results_list):
-        result['path'] = get_note_path(results_queryset[pos])
+        result['path'] = get_note_path(results_queryset[pos], 'text')
     return results_list
 
 def insert(user, note, parent_id, position, text=''):
