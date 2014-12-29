@@ -34,6 +34,8 @@ def get_note_path(note):
     indices.
     '''
     path = []
+    if note is None:
+        return path
     path.append(note.position)
     while note.parent is not None:
         path[:0] = [note.parent.position] # prepend to list
@@ -73,13 +75,14 @@ def insert(user, note, parent_id, position, text=''):
     can be either a primary key or a Note object. If a Note object is passed,
     the 'text' argument is ignored.
     '''
-    if parent_id == 0: # this will be a top-level note
+    if parent_id is None: # this will be a top-level note
         parent_note = None
     else:
         parent_note = get_object_or_404(Note, pk=parent_id, user=user)
     following_sibling_notes = Note.objects.filter(parent=parent_note,
                                    position__gte=position)\
                                   .order_by('-position')
+    user_profile = UserProfile.objects.get(user=user)
     with transaction.atomic():
         for sibling_note in following_sibling_notes:
             # shift subsequent notes down to make room for the new one
@@ -92,7 +95,7 @@ def insert(user, note, parent_id, position, text=''):
         else:
             new_note = Note(pk=note, parent=parent_note, position=position,
                             text=text, user=user,
-                            number=parent_note.next_note_number())
+                            number=user_profile.next_note_number())
         new_note.save()
     return new_note
 
@@ -105,44 +108,50 @@ def update(user, note_id, text):
     note.save()
     return note
 
-def delete(user, note):
+def delete(user, orig_note):
     '''
     Delete a note at the specified postion, shift its siblings and children
     accordingly. 'note' can be either a primary key or a Note object.
     '''
-    if not isinstance(note, Note):
-        note = get_object_or_404(Note, pk=note, user=user)
-    parent = note.parent
-    position = note.position
+    if not isinstance(orig_note, Note):
+        orig_note = get_object_or_404(Note, pk=orig_note, user=user)
+    parent = orig_note.parent
+    position = orig_note.position
     following_sibling_notes = Note.objects.filter(parent=parent,
                                                   position__gt=position)\
                                           .order_by('position')
     preceding_sibling_note = Note.objects.filter(parent=parent,
                                                  position__lt=position)\
                                          .order_by('position').last()
-    children = note.immediate_children()
+    children = list(orig_note.immediate_children())
+        # force eval now before note is deleted
     with transaction.atomic():
+        orig_note.delete()
         if preceding_sibling_note:
             # the note we're deleting has siblings before it
             next_position = preceding_sibling_note.next_child_position()
             # append the children of the deleted note to the previous
-            # sibling
+            # sibling's children
             for pos, note in enumerate(children):
                 note.parent = preceding_sibling_note
                 note.position = next_position + pos
                 note.save()
+            for note in following_sibling_notes:
+                # shift subsequent siblings up one to keep numbering continuity
+                note.position -= 1
+                note.save()
         else: # the note we're deleting doesn't have any siblings before it
             # dedent the children of the deleted note to make them children
             # of the deleted note's parent
+            for pos, note in enumerate(following_sibling_notes):
+                note.position = len(children) + pos
+                    # difference between length of preceding notes before and
+                    # after deletion
+                note.save()
             for pos, note in enumerate(children):
                 note.parent = parent
                 note.position = pos
                 note.save()
-        note.delete()
-        for note in following_sibling_notes:
-            # shift subsequent siblings up one to keep numbering continuity
-            note.position -= 1
-            note.save()
     dedent = bool(not preceding_sibling_note)
         # dedent: were children of the deleted note dedented?
     return dedent
@@ -239,13 +248,16 @@ def update_focus(user, note_id):
     Update (or set) a user's focused note (the note that shows up at the top
     of the major pane).
     '''
-    note = get_object_or_404(Note, pk=note_id, user=user)
+    if note_id is not None:
+        note = get_object_or_404(Note, pk=note_id, user=user)
+    else:
+        note = None
     profile = UserProfile.objects.get(user=user)
     profile.focused_note = note
     profile.save()
     focused_note_path = get_note_path(note)
-    if not note.expanded_in_major_pane:
+    if note is None or note.expanded_in_major_pane:
+        return (focused_note_path, None)
+    else:
         children = get_note_children({}, note)
         return (focused_note_path, children)
-    else:
-        return (focused_note_path, None)
