@@ -69,6 +69,9 @@ def search(user, query):
     results_list = [model_to_dict(result) for result in results_queryset]
     for pos, result in enumerate(results_list):
         result['path'] = get_note_path(results_queryset[pos], 'text')
+        result['uuid'] = str(result['uuid']) # js can't handle long numbers
+        if result['parent']:
+            result['parent'] = str(result['parent'])
     return results_list
 
 def insert(user, note, parent_id, position, text=''):

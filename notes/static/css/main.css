@@ -110,6 +110,18 @@ aside.notes {
       background-color: rgba(255, 158, 37, 0.1); }
     aside.notes .note-text.focused {
       background-color: rgba(255, 158, 37, 0.2); }
+  aside.notes .search-results li {
+    border-bottom: 1px solid #EBDFCC;
+    padding: 0.6em 0.6em 0.4em;
+    cursor: pointer; }
+    aside.notes .search-results li:hover {
+      background-color: rgba(255, 158, 37, 0.1); }
+  aside.notes .search-results .note-text:hover {
+    background-color: initial; }
+  aside.notes .search-results .path {
+    font-size: 0.8em;
+    font-weight: bold;
+    display: block; }
 
 section.front {
   max-width: 640px;

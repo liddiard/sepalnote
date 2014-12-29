@@ -10,11 +10,19 @@
     });
 
     app.controller('NotesController', function($http, $scope, $timeout, $document) {
+
+        // ATTRIBUTES //
+
         var controller = this;
+        this.search_query = "";
+        this.search_results = [];
         this.tree = [];
         this.diff = []; // holds diff not yet sent to backend
         this.noteTimeouts = {} // stores timeout ids associated with each note
                                // whose text has not yet been updated
+
+
+        // METHODS //
 
         // for key events bound to a specific note
         this.keyHandler = function(note, path, major_pane, index, event) {
@@ -279,9 +287,42 @@
             controller.updateFocus(parent);
         };
 
+        this.displaySearchResult = function(result) {
+            var text = result.text;
+            var snippet = text.slice(0, 26);
+            if (text.length > 26)
+                snippet += '…';
+            return snippet;
+        }
+
+        this.displaySearchResultPath = function(result) {
+            var path = result.path;
+            return path.slice(0, -1).join(' 〉');
+        };
+
         $http.get('/api/note/tree/').success(function(data){
             controller.tree = data;
         });
+
+
+        // WATCHES/INTERVALS //
+
+        // watch for changes on search results
+        $scope.$watch(
+            function(){ return controller.search_query },
+            function(newVal, oldVal){
+                if (newVal !== oldVal && controller.search_query.length) {
+                    if (this.timeoutId)
+                        window.clearTimeout(this.timeoutId);
+                    this.timeoutId = window.setTimeout(function(){
+                        $http.get('/api/note/search/', {params: {query: controller.search_query}})
+                             .success(function(data){
+                                 controller.search_results = data.results;
+                             });
+                    }, 500);
+                }
+            }
+        );
 
         window.setInterval(controller.applyDiff, 5000);
     });
