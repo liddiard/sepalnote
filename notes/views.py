@@ -99,7 +99,7 @@ class DiffNoteView(AuthenticatedAjaxView):
             if kind == 'U':
                 api.update(request.user, note['uuid'], note['text'])
             elif kind == 'C':
-                api.insert(request.user, note['uuid'], note['parent'],
+                api.insert(request.user, note['uuid'], note.get('parent'),
                            note['position'], note['text'])
             elif kind == 'I':
                 api.indent(request.user, note['uuid'], indent=True)
@@ -122,9 +122,7 @@ class AddNoteView(AuthenticatedAjaxView):
     def post(self, request):
         data = json.loads(request.body)
         parent_id = data.get('parent')
-        if parent_id is None:
-            return self.key_error('Required key (parent) missing from '
-                                  'request.')
+            # if no parent id, will be a top-level note
         position = data.get('position')
         if position is None:
             return self.key_error('Required key (position) missing from '
@@ -217,7 +215,7 @@ class UpdateFocusedNoteView(AuthenticatedAjaxView):
     def post(self, request):
         data = json.loads(request.body)
         note_id = data.get('id')
-        if note_id is None:
-            return self.key_error('Required key (id) missing from request.')
+            # if no id parameter is provided, the focused note will be updated
+            # to None (root of tree)
         focused_note_path, tree = api.update_focus(request.user, note_id)
         return self.success(focused_note_path=focused_note_path, tree=tree)
