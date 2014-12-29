@@ -65,9 +65,11 @@ def search(user, query):
     Case-insensitive search though a user's notes for the specified query.
     Returns a dictionary of matching notes.
     '''
-    search_results = Note.objects.filter(user=user,
-                                         text__icontains=query)
-    return [model_to_dict(result) for result in search_results]
+    results_queryset = Note.objects.filter(user=user, text__icontains=query)
+    results_list = [model_to_dict(result) for result in results_queryset]
+    for pos, result in enumerate(results_list):
+        result['path'] = get_note_path(results_queryset[pos])
+    return results_list
 
 def insert(user, note, parent_id, position, text=''):
     '''
