@@ -85,7 +85,7 @@ class SearchNotesView(AuthenticatedAjaxView):
         query = request.GET.get('query')
         if query is None:
             return self.key_error('Required key (query) missing from request.')
-        results = api.search(user, query)
+        results = api.search(request.user, query)
         return self.success(results=results)
 
 
