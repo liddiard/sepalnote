@@ -57,8 +57,7 @@
         $document.bind('keydown', function(event){
             if (event.metaKey && event.keyCode === 38 ||
                 event.ctrlKey && event.keyCode === 38) { // command + up arrow or ctrl + up arrow
-                var parent = controller.noteFromPath(controller.tree.focused_note_path.slice(0, -1))
-                controller.updateFocus(parent);
+                controller.updateFocusToParent();
             }
         });
 
@@ -93,6 +92,13 @@
             }
         };
 
+        this.getChildren = function(note) {
+            if (note === controller.tree.tree)
+                return note;
+            else
+                return note.children;
+        };
+
         this.applyDiff = function() {
             if (!controller.diff.length)
                 return; // exit if there's nothing to do
@@ -106,9 +112,10 @@
         };
 
         this.insertNote = function(note, parent, position, major_pane) {
-            if (!parent.children)
-                parent.children = [];
-            parent.children.splice(position, 0, note);
+            var siblings = controller.getChildren(parent);
+            if (!siblings)
+                siblings = [];
+            siblings.splice(position, 0, note);
             $timeout(function(){ // wait for the DOM to update
                 // move focus to the newly created note
                 setNoteFocus(note.uuid, major_pane);
@@ -161,12 +168,24 @@
         this.deleteNote = function(note, path, major_pane, index, event) {
             event.preventDefault();
             var parent = controller.noteFromPath(path.slice(0, -1)); // full path except last
+            var siblings = controller.getChildren(parent);
             var children = note.children;
             moveNoteFocus(-1);
-            parent.children.splice(index, 1); // remove note from DOM
-            parent.children.splice.apply(parent, [index, 0].concat(children));
-                // insert array into another array at index
-                // http://stackoverflow.com/a/7032717
+            siblings.splice(index, 1); // remove note from DOM
+            if (children) { // deleted note has children
+                if (index) { // deleted note has previous siblings
+                    var previous_sibling = parent[index-1];
+                    if (!previous_sibling.children)
+                        previous_sibling.children = [];
+                    // insert deleted note's chidren at the end of previous sibling's children
+                    previous_sibling.children = previous_sibling.children.concat(children);
+                }
+                else // deleted note has no previous sibling
+                    siblings.splice.apply(siblings, [index, 0].concat(children));
+                    // dedent children at position of deleted note
+                    // insert array into another array at index
+                    // http://stackoverflow.com/a/7032717
+            }
             controller.diff.push({note: note, kind: 'X'});
         };
 
@@ -235,15 +254,29 @@
         };
 
         this.updateFocus = function(note) {
+            var uuid;
+            // if the "note" we're trying to focus on is the root of the tree,
+            // focused_note (stored in the database) is null
+            if (note === controller.tree.tree)
+                uuid = null;
+            else
+                uuid = note.uuid;
             $http.post(
                 '/api/userprofile/update-focused-note/',
-                {id: note.uuid}
+                {id: uuid}
             )
             .success(function(data){
                 if (data.tree)
                     note.children = data.tree.children;
                 controller.tree.focused_note_path = data.focused_note_path;
             });
+        };
+
+        this.updateFocusToParent = function() {
+            if (!controller.tree.focused_note_path.length)
+                return; // we're already at the root, do nothing
+            var parent = controller.noteFromPath(controller.tree.focused_note_path.slice(0, -1)) || null;
+            controller.updateFocus(parent);
         };
 
         $http.get('/api/note/tree/').success(function(data){
