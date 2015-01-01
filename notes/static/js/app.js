@@ -15,8 +15,9 @@
 
         var controller = this;
         this.search_query = "";
-        this.search_results = [];
-        this.tree = [];
+        this.search_results = {};
+        this.searching = false; // are we searching currently?
+        this.tree = []; // holds all the notes
         this.diff = []; // holds diff not yet sent to backend
         this.noteTimeouts = {} // stores timeout ids associated with each note
                                // whose text has not yet been updated
@@ -293,11 +294,16 @@
             if (text.length > 26)
                 snippet += '…';
             return snippet;
-        }
+        };
 
         this.displaySearchResultPath = function(result) {
             var path = result.path;
             return path.slice(0, -1).join(' 〉');
+        };
+
+        this.clearSearchResult = function() {
+            controller.search_query = "";
+            controller.search_results = [];
         };
 
         $http.get('/api/note/tree/').success(function(data){
@@ -311,13 +317,19 @@
         $scope.$watch(
             function(){ return controller.search_query },
             function(newVal, oldVal){
+                if (!controller.search_query.length) {
+                    controller.clearSearchResult();
+                }
                 if (newVal !== oldVal && controller.search_query.length) {
                     if (this.timeoutId)
                         window.clearTimeout(this.timeoutId);
+                    controller.searching = true;
                     this.timeoutId = window.setTimeout(function(){
                         $http.get('/api/note/search/', {params: {query: controller.search_query}})
                              .success(function(data){
-                                 controller.search_results = data.results;
+                                 controller.searching = false;
+                                 if (controller.search_query.length)
+                                     controller.search_results = data;
                              });
                     }, 500);
                 }

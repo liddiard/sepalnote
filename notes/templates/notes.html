@@ -6,14 +6,26 @@
 <section ng-controller="NotesController as notes" id="notes">
 
     <aside class="notes">
-        <h1 class="logo">Sepalnote</h1>
-        <input ng-model="notes.search_query"
-               id="search"
-               placeholder="&#xF002; Search"
-               autocomplete="off"/>
+        <div class="search">
+{% endverbatim %}
+            <img class="logo" src="{{ STATIC_URL }}img/logo.svg"/>
+{% verbatim %}
+            <input ng-model="notes.search_query"
+                   id="search"
+                   placeholder="Search"
+                   autocomplete="off"/>
+            <i ng-hide="notes.search_query.length" class="fa fa-search"></i>
+            <i ng-show="notes.searching"
+               class="fa fa-spin fa-circle-o-notch">
+            </i>
+            <i ng-show="notes.search_results.hasOwnProperty('result') && !notes.searching"
+               ng-click="notes.clearSearchResult()"
+               class="fa fa-close">
+            </i>
+        </div>
 
         <ul class="search-results">
-            <li ng-repeat="result in notes.search_results">
+            <li ng-repeat="result in notes.search_results.results">
                 <span class="path">{{notes.displaySearchResultPath(result)}}</span>
                 <span class="note-text">{{notes.displaySearchResult(result)}}</span>
             </li>
