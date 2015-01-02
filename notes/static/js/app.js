@@ -111,6 +111,17 @@
                 return note.children;
         };
 
+        this.setChildren = function(note, children) {
+            if (note === controller.tree.tree) {
+                note = children;
+                return children;
+            }
+            else {
+                note.children = children;
+                return note.children;
+            }
+        }
+
         this.applyDiff = function() {
             if (!controller.diff.length)
                 return; // exit if there's nothing to do
@@ -126,7 +137,7 @@
         this.insertNote = function(note, parent, position, major_pane) {
             var siblings = controller.getChildren(parent);
             if (!siblings)
-                siblings = [];
+                siblings = controller.setChildren(parent, []);
             siblings.splice(position, 0, note);
             $timeout(function(){ // wait for the DOM to update
                 // move focus to the newly created note
