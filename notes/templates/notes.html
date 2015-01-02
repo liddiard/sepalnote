@@ -25,6 +25,11 @@
         </div>
 
         <ul class="search-results">
+            <li ng-if="notes.search_results.hasOwnProperty('result') &&
+                       !notes.search_results.results.length"
+                class="no-results">
+                No results
+            </li>
             <li ng-repeat="result in notes.search_results.results"
                 ng-click="notes.updateFocus(result)">
                 <span class="path">{{notes.displaySearchResultPath(result)}}</span>
@@ -36,7 +41,7 @@
             <li ng-click="notes.updateFocus(notes.tree.tree)"
                 ng-class="{focused: notes.noteFromPath(notes.tree.focused_note_path) === notes.tree.tree}"
                 class="root">
-                [Root]
+                Root
             </li>
             <li ng-repeat="note in notes.tree.tree"
                 ng-init="path = [$index]"
