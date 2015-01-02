@@ -21,7 +21,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['sepalnote.herokuapp.com', '.sepalnote.com']
 
 
 # Application definition
