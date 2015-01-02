@@ -9,7 +9,7 @@ DATABASES = {
 }
 
 # static files
-AWS_STORAGE_BUCKET_NAME = 'monitor404'
+AWS_STORAGE_BUCKET_NAME = 'sepalnote'
 S3_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 
 STATIC_URL = S3_URL
