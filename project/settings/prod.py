@@ -28,3 +28,5 @@ STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 # you run `collectstatic`).
 DEFAULT_FILE_STORAGE = 'project.s3utils.MediaRootS3BotoStorage'
 STATICFILES_STORAGE = 'project.s3utils.StaticRootS3BotoStorage'
+
+STATIC_ROOT = "/static/"
