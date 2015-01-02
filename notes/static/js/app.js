@@ -265,7 +265,7 @@
         this.updateFocus = function(note) {
             var uuid;
             // if the "note" we're trying to focus on is the root of the tree,
-            // focused_note (stored in the database) is null
+            // focused_note (stored in the database) is null/None
             if (note === controller.tree.tree)
                 uuid = null;
             else
@@ -276,6 +276,8 @@
             )
             .success(function(data){
                 if (data.tree)
+                    controller.tree.tree = data.tree;
+                if (data.children)
                     note.children = data.tree.children;
                 controller.tree.focused_note_path = data.focused_note_path;
             });

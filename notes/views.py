@@ -217,5 +217,7 @@ class UpdateFocusedNoteView(AuthenticatedAjaxView):
         note_id = data.get('id')
             # if no id parameter is provided, the focused note will be updated
             # to None (root of tree)
-        focused_note_path, tree = api.update_focus(request.user, note_id)
-        return self.success(focused_note_path=focused_note_path, tree=tree)
+        response = api.update_focus(request.user, note_id)
+        return self.success(focused_note_path=response['focused_note_path'],
+                            tree=response.get('tree'),
+                            children=response.get('children'))

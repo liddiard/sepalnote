@@ -251,18 +251,29 @@ def change_permissions(user, note_id):
 def update_focus(user, note_id):
     '''
     Update (or set) a user's focused note (the note that shows up at the top
-    of the major pane).
+    of the major pane). Returns a dictionary.
     '''
+    response = {}
     if note_id is not None:
         note = get_object_or_404(Note, pk=note_id, user=user)
+        parent = note.parent
     else:
         note = None
+        parent = None
     profile = UserProfile.objects.get(user=user)
     profile.focused_note = note
     profile.save()
-    focused_note_path = get_note_path(note)
-    if note is None or note.expanded_in_major_pane:
-        return (focused_note_path, None)
-    else:
-        children = get_note_children({}, note)
-        return (focused_note_path, children)
+    response['focused_note_path'] = get_note_path(note)
+    if (parent is not None and not parent.expanded_in_major_pane and
+        not parent.expanded_in_minor_pane): # note is not present on frontend
+                                            # becasue its parent is collapsed
+        # travel up the note's ancestors, expanding them, until we reach the
+        # root or an expanded note
+        while parent is not None and not parent.expanded_in_major_pane:
+            parent.expanded_in_major_pane = True
+            parent.save()
+            parent = parent.parent
+        response['tree'] = tree(user)[0] # send back the whole tree
+    if note is not None and not note.expanded_in_major_pane:
+        response['children'] = get_note_children({}, note)
+    return response

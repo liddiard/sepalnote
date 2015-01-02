@@ -25,7 +25,8 @@
         </div>
 
         <ul class="search-results">
-            <li ng-repeat="result in notes.search_results.results">
+            <li ng-repeat="result in notes.search_results.results"
+                ng-click="notes.updateFocus(result)">
                 <span class="path">{{notes.displaySearchResultPath(result)}}</span>
                 <span class="note-text">{{notes.displaySearchResult(result)}}</span>
             </li>
