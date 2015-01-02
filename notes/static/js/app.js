@@ -155,7 +155,7 @@
                 expanded_in_minor_pane: false,
                 text: ''
             };
-            if (note.children && note.expanded_in_major_pane) {
+            if (note.children && note.children.length && note.expanded_in_major_pane) {
                 new_note.parent = note.uuid;
                 new_note.position = 0;
                 controller.insertNote(new_note, note, 0, true);
