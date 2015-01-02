@@ -58,6 +58,9 @@
             else if (event.keyCode === 40) // down arrow
                 moveNoteFocus(1);
 
+            else if (event.ctrlKey || event.metaKey) // user is just holding command/ctrl and may be about to close the tab, so we don't want to trigger an update which will produce a warning about unsaved changes on attempted close
+                return;
+
             else
                 controller.updateNote(note);
         };
@@ -338,7 +341,28 @@
             }
         );
 
-        window.setInterval(controller.applyDiff, 4000);
+        // watch for unprocessed changes in queues
+        $scope.$watch(
+            function(){ return controller.diff.length },
+            function(){
+                if (controller.diff.length)
+                    window.onbeforeunload = confirmOnPageExit;
+                else
+                    window.onbeforeunload = null;
+            }
+        );
+
+        $scope.$watch(
+            function(){ return controller.noteTimeouts },
+            function(){
+                if (!isEmpty(controller.noteTimeouts))
+                    window.onbeforeunload = confirmOnPageExit;
+                else
+                    window.onbeforeunload = null;
+            }, true // objectEquality
+        );
+
+        window.setInterval(controller.applyDiff, 2000);
     });
 
 })(window.angular);

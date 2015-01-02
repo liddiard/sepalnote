@@ -1,3 +1,11 @@
+function isEmpty(obj) {
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
 // get index of DOM element in an array of elements
 // based on http://stackoverflow.com/a/18185833
 function getIndex(elements, element) {
@@ -67,4 +75,22 @@ function getCaretPosition(editableDiv) {
         }
     }
     return caretPos;
+}
+
+// Dialog box for unsaved changes on navigating away
+// http://stackoverflow.com/a/1119324
+function confirmOnPageExit(e)  {
+    // If we haven't been passed the event get the window.event
+    e = e || window.event;
+
+    var message = "Hold up! We're still saving your last changes. Wait 5 seconds then try closing the tab again.";
+
+    // For IE6-8 and Firefox prior to version 4
+    if (e)
+    {
+        e.returnValue = message;
+    }
+
+    // For Chrome, Safari, IE8+ and Opera 12+
+    return message;
 }
