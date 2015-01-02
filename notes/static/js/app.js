@@ -171,7 +171,7 @@
             controller.noteTimeouts[note.uuid] = window.setTimeout(function(){
                 controller.diff.push({note: note, kind: 'U'});
                 delete controller.noteTimeouts[note.uuid];
-            }, 5000);
+            }, 4000);
         };
 
         this.deleteNote = function(note, path, major_pane, index, event) {
@@ -338,7 +338,7 @@
             }
         );
 
-        window.setInterval(controller.applyDiff, 5000);
+        window.setInterval(controller.applyDiff, 4000);
     });
 
 })(window.angular);

@@ -88,7 +88,7 @@ aside.notes {
     overflow: hidden;
     border-right: 1px solid #EBDFCC;
     border-bottom: 1px solid #EBDFCC; }
-    aside.notes .search > * {
+    aside.notes .search * {
       float: left; }
     aside.notes .search input {
       padding: 0.5em 0.75em;
