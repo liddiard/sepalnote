@@ -32,6 +32,11 @@
         </ul>
 
         <ul>
+            <li ng-click="notes.updateFocus(notes.tree.tree)"
+                ng-class="{focused: notes.noteFromPath(notes.tree.focused_note_path) === notes.tree.tree}"
+                class="root">
+                [Root]
+            </li>
             <li ng-repeat="note in notes.tree.tree"
                 ng-init="path = [$index]"
                 ng-include="'/fragment/note-minor/'"

@@ -119,14 +119,22 @@ aside.notes {
     opacity: 0; }
     aside.notes .note-actions:hover, aside.notes .note-actions.active {
       opacity: 1; }
+  aside.notes .root {
+    color: rgba(68, 42, 10, 0.5);
+    text-transform: uppercase;
+    font-size: 0.8em;
+    margin-left: -1em;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.2em 0.2em 0.2em 0; }
   aside.notes .note-text {
     cursor: pointer;
     padding-right: 0.25em;
     display: inline-block; }
-    aside.notes .note-text:hover {
-      background-color: rgba(255, 158, 37, 0.1); }
-    aside.notes .note-text.focused {
-      background-color: rgba(255, 158, 37, 0.2); }
+  aside.notes .root:hover, aside.notes .note-text:hover {
+    background-color: rgba(255, 158, 37, 0.1); }
+  aside.notes .root.focused, aside.notes .note-text.focused {
+    background-color: rgba(255, 158, 37, 0.2); }
   aside.notes .search-results li {
     border-bottom: 1px solid #EBDFCC;
     padding: 0.6em 0.4em 0.4em;

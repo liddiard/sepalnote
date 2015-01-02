@@ -181,12 +181,24 @@ aside.notes {
         }
     }
 
+    .root {
+        color: rgba($text-color, 0.5);
+        text-transform: uppercase;
+        font-size: 0.8em;
+        margin-left: -1em;
+        cursor: pointer;
+        display: inline-block;
+        padding: 0.2em 0.2em 0.2em 0;
+    }
+
     .note-text {
         cursor: pointer;
         padding-right: 0.25em;
         display: inline-block; // forces containment of text in sidebar with overflow: scroll
                                // http://stackoverflow.com/a/3917059
+    }
 
+    .root, .note-text {
         &:hover {
             background-color: rgba($select-color, 0.1);
         }
