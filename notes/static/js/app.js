@@ -58,6 +58,10 @@
             else if (event.keyCode === 40) // down arrow
                 moveNoteFocus(1);
 
+            else if (event.ctrlKey && event.keyCode === 86 ||
+                     event.metaKey && event.keyCode === 86) // ctrl+v or command+v
+                controller.updateNote(note);
+
             else if (event.ctrlKey || event.metaKey) // user is just holding command/ctrl and may be about to close the tab, so we don't want to trigger an update which will produce a warning about unsaved changes on attempted close
                 return;
 
