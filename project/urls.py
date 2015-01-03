@@ -7,7 +7,7 @@ from notes import views
 urlpatterns = patterns('',
     # pages
     url(r'^$', views.FrontView.as_view(), name='front'),
-    url(r'^note/', views.NotesView.as_view(), name='notes'),
+    url(r'^notes/', views.NotesView.as_view(), name='notes'),
 
     # fragments
     url(r'^fragment/note-major/', views.MajorNoteFragmentView.as_view()),
@@ -27,4 +27,7 @@ urlpatterns = patterns('',
 
     # admin
     url(r'^admin/', include(admin.site.urls)),
+
+    # registration
+    (r'^accounts/', include('registration.backends.default.urls')),
 )

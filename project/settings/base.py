@@ -37,6 +37,7 @@ DJANGO_APPS = (
 
 THIRD_PARTY_APPS = (
     'storages',
+    'registration'
 )
 
 LOCAL_APPS = (
@@ -78,3 +79,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# django-registration
+ACCOUNT_ACTIVATION_DAYS = 7 # one-week activation window
+REGISTRATION_AUTO_LOGIN = True # automatically log the user in upon clicking
+                               # link in confirmation email

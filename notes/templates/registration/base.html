@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        document.getElementsByTagName('input')[1].focus(); // the first input is always a hidden CSRF token
+    });
+</script>
+
+<a class="logo logo-registration" href="{% url 'front' %}" title="Main Page"/>
+    <h1>Sepalnote</h1>
+</a>
+<section class="registration">
+{% block registration_content %}{% endblock %}
+</section>
+
+{% endblock %}
