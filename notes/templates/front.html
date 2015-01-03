@@ -2,13 +2,32 @@
 
 {% block content %}
 
+<script>
+document.addEventListener("DOMContentLoaded", function(event) {
+    var taglineChoices = [
+        "Notes that grow with you",
+        "Notes from the ground up",
+        "A fresh look at note taking"
+    ];
+    var taglineElement = document.getElementsByClassName('tagline')[0];
+    var tagline = taglineChoices[getRandomInt(taglineChoices.length-1)];
+    taglineElement.innerHTML = tagline;
+});
+</script>
+
 <section class="front">
     <div class="col">
         <h1 class="front logo">Sepalnote</h1>
         <h2 class="tagline">Notes that grow with you</h2>
     </div>
     <div class="col">
-        <h2 class="description">Hierarchical note taking app with a beautiful API and robust offline mode.</h2>
+        <h2 class="description">A hierarchy-based note taking webapp with powerful organization and intuitive design.</h2>
+    </div>
+
+    <div class="center">
+        <a class="btn call-to-action" href="{% url 'registration_register' %}">
+            Get Started
+        </a>
     </div>
 </section>
 
