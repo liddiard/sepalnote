@@ -18,9 +18,9 @@
         this.search_results = {};
         this.searching = false; // are we searching currently?
         this.tree = []; // holds all the notes
-        this.diff = []; // holds diff not yet sent to backend
         this.noteTimeouts = {} // stores timeout ids associated with each note
                                // whose text has not yet been updated
+        this.online = true; // can we access data on this server?
 
 
         // METHODS //
@@ -126,16 +126,30 @@
             }
         }
 
+        this.pushDiff = function(kind, note) {
+            var note = copyObj(note); // copy obj so we can 'chidren' key without affecting original
+            delete note.children; // 'chidren' key is potentially huge. we don't want/need to send/store it.
+            var diff = JSON.parse(localStorage.getItem('diff'));
+            diff.push({kind: kind, note: note});
+            localStorage.setItem('diff', JSON.stringify(diff));
+        };
+
         this.applyDiff = function() {
-            if (!controller.diff.length)
-                return; // exit if there's nothing to do
+            var diff = JSON.parse(localStorage.getItem('diff'));
+            if (!diff.length)
+                return; // exit if there's nothing in the queue
+            if (!internetConnectionExists()) {
+                controller.online = false;
+                return; // exit if we can't apply diff; just keep it in localStorage
+            }
+            controller.online = true;
             $http({
                 method: 'POST',
                 url: '/api/note/diff/',
-                data: controller.diff
+                data: diff
             });
-            console.log(controller.diff);
-            controller.diff = [];
+            console.log(diff);
+            localStorage.setItem('diff', JSON.stringify([]));
         };
 
         this.insertNote = function(note, parent, position, major_pane) {
@@ -147,7 +161,7 @@
                 // move focus to the newly created note
                 setNoteFocus(note.uuid, major_pane);
             });
-            controller.diff.push({note: note, kind: 'C'});
+            controller.pushDiff('C', note);
         };
 
         this.addNote = function(note, path, major_pane, index, event) {
@@ -187,7 +201,7 @@
             if (controller.noteTimeouts[note.uuid])
                 window.clearTimeout(controller.noteTimeouts[note.uuid]);
             controller.noteTimeouts[note.uuid] = window.setTimeout(function(){
-                controller.diff.push({note: note, kind: 'U'});
+                controller.pushDiff('U', note);
                 delete controller.noteTimeouts[note.uuid];
             }, 4000);
         };
@@ -213,7 +227,7 @@
                     // insert array into another array at index
                     // http://stackoverflow.com/a/7032717
             }
-            controller.diff.push({note: note, kind: 'X'});
+            controller.pushDiff('X', note);
         };
 
         this.indentNote = function(note, path, major_pane, index, event, indent) {
@@ -262,7 +276,7 @@
                 setNoteFocus(note.uuid, major_pane);
             });
             var kind = indent ? "I" : "D";
-            controller.diff.push({note: note, kind: kind});
+            controller.pushDiff(kind, note);
         };
 
         this.expandNote = function(note, major_pane){
@@ -358,16 +372,6 @@
 
         // watch for unprocessed changes in queues
         $scope.$watch(
-            function(){ return controller.diff.length },
-            function(){
-                if (controller.diff.length)
-                    window.onbeforeunload = confirmOnPageExit;
-                else
-                    window.onbeforeunload = null;
-            }
-        );
-
-        $scope.$watch(
             function(){ return controller.noteTimeouts },
             function(){
                 if (!isEmpty(controller.noteTimeouts))
@@ -376,6 +380,17 @@
                     window.onbeforeunload = null;
             }, true // objectEquality
         );
+
+
+        if (localStorage.getItem('diff')) { // a diff already exists from a previous session
+            if (JSON.parse(localStorage.getItem('diff')).length) { // there is an unapplied diff
+                controller.applyDiff();
+                alert('Welcome back! It looks like you have unsaved changes from a previous session, which are being saved now. Press OK to reload the page.');
+                location.reload();
+            }
+        }
+        else
+            localStorage.setItem('diff', JSON.stringify([])); // holds diff not yet sent to backend
 
         window.setInterval(controller.applyDiff, 2000);
     });

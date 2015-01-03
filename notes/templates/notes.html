@@ -52,6 +52,13 @@
             </li>
         </ul>
 
+        <div class="offline-mode"
+             ng-hide="notes.online"
+             title="Looks like you're offline right now, but don't worry, your changes are still being saved in your browser (even if you close this window)! We'll sync them next time your browser is back online.">
+            <div class="dot"></div>
+            Offline Mode
+        </div>
+
     </aside>
 
     <main class="notes">

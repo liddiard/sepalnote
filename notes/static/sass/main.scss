@@ -114,7 +114,7 @@ aside.notes {
     width: $sidebar-width;
     overflow-x: auto;
     border-right: $edge-trim;
-    background-color: $background-color - #000007;
+    background-color: $sidebar-background-color;
     box-shadow: $box-shadow;
     white-space: nowrap;
     box-sizing: border-box;
@@ -242,6 +242,26 @@ aside.notes {
             font-weight: bold;
             display: block;
             color: $primary-color;
+        }
+    }
+
+    .offline-mode {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        font-size: 0.7em;
+        text-transform: uppercase;
+        padding: 0.2em 0.4em;
+        color: rgba($text-color, 0.5);
+        background-color: $sidebar-background-color;
+        cursor: help;
+
+        .dot {
+            background-color: $error-color + #222;
+            width: 8px;
+            height: 8px;
+            display: inline-block;
+            border-radius: 50%;
         }
     }
 }

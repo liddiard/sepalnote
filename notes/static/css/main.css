@@ -253,6 +253,22 @@ aside.notes {
     font-weight: bold;
     display: block;
     color: #6700A0; }
+  aside.notes .offline-mode {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    padding: 0.2em 0.4em;
+    color: rgba(68, 42, 10, 0.5);
+    background-color: #fffef4;
+    cursor: help; }
+    aside.notes .offline-mode .dot {
+      background-color: #dd2222;
+      width: 8px;
+      height: 8px;
+      display: inline-block;
+      border-radius: 50%; }
 
 .notes ul {
   padding-left: 1em;

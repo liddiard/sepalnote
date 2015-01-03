@@ -6,6 +6,43 @@ function isEmpty(obj) {
     return true;
 }
 
+// copies a JSON object and returns the copy. doesn't handle Date objects properly
+// http://stackoverflow.com/a/5344074
+function copyObj(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+// http://diveintohtml5.info/detect.html
+function browserSupportsLocalStorage() {
+    try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+    } catch(e) {
+        return false;
+    }
+}
+
+// check if navigator can make requests to our server
+// http://www.kirupa.com/html5/check_if_internet_connection_exists_in_javascript.htm
+function internetConnectionExists() {
+    var xhr = new XMLHttpRequest();
+    var file = "/";
+    var randomNum = Math.round(Math.random() * 10000);
+
+    xhr.open('HEAD', file + "?rand=" + randomNum, false);
+
+    try {
+        xhr.send();
+
+        if (xhr.status >= 200 && xhr.status < 304) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (e) {
+        return false;
+    }
+}
+
 // get index of DOM element in an array of elements
 // based on http://stackoverflow.com/a/18185833
 function getIndex(elements, element) {
