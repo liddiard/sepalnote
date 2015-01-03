@@ -1,0 +1,66 @@
+a.logo-registration {
+    padding: 0.5em 1em;
+    text-decoration: none;
+    float: left;
+    font-size: 1.2em;
+
+    &:hover {
+        color: $primary-color - #111;
+    }
+
+    h1 {
+        margin: 0;
+    }
+}
+
+section.registration {
+    clear: both;
+    max-width: 300px;
+    background-color: rgba(255,255,255,0.75);
+    margin: 0 auto;
+    border: $edge-trim;
+    padding: 2em;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,0,0, 0.05);
+
+    h1 {
+        margin-top: 0.25em;
+    }
+
+    label {
+        display: block;
+        color: rgba($text-color, 0.75);
+        margin-bottom: 0.25em;
+    }
+
+    input[type=text], input[type=email], input[type=password] {
+        border: $edge-trim;
+        padding: 0.4em 0.6em;
+        font-size: 1em;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: rgba($background-color, 0.75);
+    }
+
+    input[type=submit] {
+        color: white;
+        background-color: $primary-color;
+        border: 0;
+        font-size: 1em;
+        padding: 0.8em 1.6em;
+        cursor: pointer;
+        float: right;
+        margin: 0.3em 0 0.6em;
+
+        &:hover {
+            background-color: $primary-color - #111;
+        }
+    }
+
+    ul.errorlist {
+        color: $error-color;
+        list-style-type: none;
+        padding: 0;
+    }
+}

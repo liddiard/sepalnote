@@ -1,0 +1,48 @@
+section.front {
+    max-width: 640px;
+    box-sizing: border-box;
+    padding: 1em;
+    margin: 2em auto;
+}
+
+.tagline {
+    color: $primary-color;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: -0.4em 0 0;
+    text-align: right;
+}
+
+.description {
+    margin: 0.8em 0;
+    font-size: 1.3em;
+    font-weight: normal;
+}
+
+.col {
+    float: left;
+    width: 50%;
+    padding: 0 1.5em;
+    box-sizing: border-box;
+}
+
+.call-to-action {
+    font-size: 1.5em;
+    padding: 0.5em 1em;
+    background-color: $primary-color;
+    color: white;
+    margin: 1em;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+
+    &:hover {
+        color: white;
+        background-color: $primary-color - #111;
+    }
+
+    &:active {
+        background-color: $primary-color - #222;
+    }
+}

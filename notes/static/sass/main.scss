@@ -1,14 +1,13 @@
-$helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$primary-color: #6700A0;
-$background-color: #fffefb;
-$text-color: #442A0A;
-$select-color: #FF9E25;
-$sidebar-width: 280px;
-$edge-trim-border-width: 1px;
-$edge-trim: $edge-trim-border-width solid #EBDFCC;
+@import 'globals';
+@import 'front';
+@import 'registration';
 
 ::-webkit-input-placeholder {
     color: rgba($text-color, 0.25);
+}
+
+html, body {
+    height: 100%;
 }
 
 body {
@@ -18,19 +17,21 @@ body {
     margin: 0;
     border: 0;
     padding: 0;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: cover;
 }
 
 a {
-    $color: #4774E7;
-    color: $color;
+    color: $link-color;
     cursor: pointer;
 
     &:hover {
-        color: $color + #111;
+        color: $link-color + #111;
     }
 
     &:active {
-        color: $color - #111;
+        color: $link-color - #111;
     }
 }
 
@@ -72,6 +73,7 @@ main.notes {
     right: 0;
     box-sizing: border-box;
     padding: 0 1.5rem;
+    background-color: $background-color;
 
     h1 {
         font-weight: normal;
@@ -244,13 +246,6 @@ aside.notes {
     }
 }
 
-section.front {
-    max-width: 640px;
-    box-sizing: border-box;
-    padding: 1em;
-    margin: 1em auto;
-}
-
 .notes {
     ul {
         padding-left: 1em;
@@ -312,23 +307,6 @@ section.front {
     }
 }
 
-.tagline {
-    color: $primary-color;
-    font-weight: bold;
-    font-size: 1.2em;
-    margin: 0;
-    text-align: right;
-}
-
-.description {
-    margin: 1.2em 0;
-    font-size: 1.4em;
-    font-weight: normal;
-}
-
-.col {
-    float: left;
-    width: 50%;
-    padding: 0 1.5em;
-    box-sizing: border-box;
+.center {
+    text-align: center;
 }

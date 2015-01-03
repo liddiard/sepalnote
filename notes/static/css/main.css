@@ -1,5 +1,97 @@
+section.front {
+  max-width: 640px;
+  box-sizing: border-box;
+  padding: 1em;
+  margin: 2em auto; }
+
+.tagline {
+  color: #6700A0;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: -0.4em 0 0;
+  text-align: right; }
+
+.description {
+  margin: 0.8em 0;
+  font-size: 1.3em;
+  font-weight: normal; }
+
+.col {
+  float: left;
+  width: 50%;
+  padding: 0 1.5em;
+  box-sizing: border-box; }
+
+.call-to-action {
+  font-size: 1.5em;
+  padding: 0.5em 1em;
+  background-color: #6700A0;
+  color: white;
+  margin: 1em;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none; }
+  .call-to-action:hover {
+    color: white;
+    background-color: #56008f; }
+  .call-to-action:active {
+    background-color: #45007e; }
+
+a.logo-registration {
+  padding: 0.5em 1em;
+  text-decoration: none;
+  float: left;
+  font-size: 1.2em; }
+  a.logo-registration:hover {
+    color: #56008f; }
+  a.logo-registration h1 {
+    margin: 0; }
+
+section.registration {
+  clear: both;
+  max-width: 300px;
+  background-color: rgba(255, 255, 255, 0.75);
+  margin: 0 auto;
+  border: 1px solid #EBDFCC;
+  padding: 2em;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05); }
+  section.registration h1 {
+    margin-top: 0.25em; }
+  section.registration label {
+    display: block;
+    color: rgba(68, 42, 10, 0.75);
+    margin-bottom: 0.25em; }
+  section.registration input[type=text], section.registration input[type=email], section.registration input[type=password] {
+    border: 1px solid #EBDFCC;
+    padding: 0.4em 0.6em;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(255, 254, 251, 0.75); }
+  section.registration input[type=submit] {
+    color: white;
+    background-color: #6700A0;
+    border: 0;
+    font-size: 1em;
+    padding: 0.8em 1.6em;
+    cursor: pointer;
+    float: right;
+    margin: 0.3em 0 0.6em; }
+    section.registration input[type=submit]:hover {
+      background-color: #56008f; }
+  section.registration ul.errorlist {
+    color: #b00;
+    list-style-type: none;
+    padding: 0; }
+
 ::-webkit-input-placeholder {
   color: rgba(68, 42, 10, 0.25); }
+
+html, body {
+  height: 100%; }
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -7,7 +99,10 @@ body {
   background-color: #fffefb;
   margin: 0;
   border: 0;
-  padding: 0; }
+  padding: 0;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: cover; }
 
 a {
   color: #4774E7;
@@ -47,7 +142,8 @@ main.notes {
   left: 280px;
   right: 0;
   box-sizing: border-box;
-  padding: 0 1.5rem; }
+  padding: 0 1.5rem;
+  background-color: #fffefb; }
   main.notes h1 {
     font-weight: normal;
     margin-bottom: 0;
@@ -157,12 +253,6 @@ aside.notes {
     display: block;
     color: #6700A0; }
 
-section.front {
-  max-width: 640px;
-  box-sizing: border-box;
-  padding: 1em;
-  margin: 1em auto; }
-
 .notes ul {
   padding-left: 1em;
   border-left: 1px solid #BFFFA6;
@@ -202,22 +292,7 @@ section.front {
     margin: 0;
     text-align: right; }
 
-.tagline {
-  color: #6700A0;
-  font-weight: bold;
-  font-size: 1.2em;
-  margin: 0;
-  text-align: right; }
-
-.description {
-  margin: 1.2em 0;
-  font-size: 1.4em;
-  font-weight: normal; }
-
-.col {
-  float: left;
-  width: 50%;
-  padding: 0 1.5em;
-  box-sizing: border-box; }
+.center {
+  text-align: center; }
 
 /*# sourceMappingURL=main.css.map */
