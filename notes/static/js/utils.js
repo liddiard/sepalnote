@@ -31,6 +31,11 @@ function setNoteFocus(note, major_pane) {
     input.focus();
 }
 
+// Returns a random integer between zero and max (inclusive)
+function getRandomInt(max) {
+    return Math.floor(Math.random() * (max + 1));
+}
+
 // generate a positive integer from zero to the max value of a BigInteger in
 // Django. Suitable for UUID generation.
 function generateUUID() {
@@ -42,11 +47,6 @@ function generateUUID() {
     var secondRandomInt = getRandomInt(secondPart);
 
     return firstRandomInt.toString() + secondRandomInt.toString();
-
-    // Returns a random integer between zero and max (inclusive)
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * (max + 1));
-    }
 }
 
 // Returns the caret (cursor) position of the specified text field.
