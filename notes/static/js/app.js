@@ -310,7 +310,7 @@
                 if (data.tree)
                     controller.tree.tree = data.tree;
                 if (data.children)
-                    note.children = data.tree.children;
+                    note.children = data.children;
                 controller.tree.focused_note_path = data.focused_note_path;
             });
         };
